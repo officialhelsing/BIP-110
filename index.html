@@ -48,6 +48,7 @@
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
             touch-action: pan-x pan-y;
+            -webkit-text-size-adjust: 100%;
         }
 
         #tesseract-container {
@@ -78,18 +79,29 @@
             background: #3f3f46; 
         }
 
-        /* Typography tweaks */
+        /* Typography tweaks for optimal mobile and desktop readability */
         p {
             line-height: 2.1 !important;
-            margin-bottom: 3rem !important;
+            margin-bottom: 2.5rem !important;
             color: #a1a1aa !important;
             text-align: justify;
             text-justify: inter-word;
+            word-break: break-word;
         }
 
         li {
             text-align: justify;
             text-justify: inter-word;
+            word-break: break-word;
+        }
+
+        /* Ensure math blocks scroll nicely on mobile and never overflow boxes */
+        .katex-display {
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
+            padding: 0.5rem 0;
+            -webkit-overflow-scrolling: touch;
         }
 
         /* Hide scrollbars for clean navigation bars */
@@ -104,80 +116,40 @@
 </head>
 <body class="antialiased selection:bg-white selection:text-black bg-black text-white relative flex justify-center">
 
-    <!-- Slide-out Table of Contents Drawer -->
-    <div id="toc-drawer" class="fixed inset-y-0 left-0 z-50 w-80 bg-black border-r border-neutral-900 p-6 transform -translate-x-full transition-transform duration-300 overflow-y-auto">
-        <div class="flex items-center justify-between mb-8 pb-4 border-b border-neutral-900">
-            <h3 class="text-white font-mono text-sm tracking-wide uppercase">Table of Contents</h3>
-            <button onclick="toggleTableOfContents()" class="text-neutral-400 hover:text-white p-1">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-        </div>
-        <nav class="space-y-3 font-sans text-xs text-neutral-400">
-            <a href="#abstract" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">Abstract</a>
-            <a href="#introduction" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">Introduction</a>
-            <a href="#sec-1" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">1. Technical Overview of BIP-110</a>
-            <a href="#sec-2" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">2. Activation Mechanism & Choices</a>
-            <a href="#sec-3" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">3. Incentive Misalignment</a>
-            <a href="#sec-4" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">4. Storage Externalities & Legal Risk</a>
-            <a href="#sec-5" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">5. Historical Precedents</a>
-            <a href="#sec-6" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">6. Game-Theoretic Analysis</a>
-            <a href="#sec-7" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">7. The Minority Chain Outcome</a>
-            <a href="#sec-8" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">8. Philosophical Divide</a>
-            <a href="#sec-9" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">9. Soft Power of Core & Clients</a>
-            <a href="#sec-10" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">10. Hashrate & Economic Majority</a>
-            <a href="#sec-11" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">11. Critiques of 55% Threshold</a>
-            <a href="#sec-12" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">12. Governance & Ossification Risks</a>
-            <a href="#sec-13" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">13. Evaluation: Net Positive?</a>
-            <a href="#sec-14" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">14. Persistent Structural Problems</a>
-            <a href="#sec-15" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">15. Design Intent & Satoshi Era</a>
-            <a href="#sec-16" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">16. Non-Consensus Alternatives</a>
-            <a href="#worst-case-scenarios" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1 font-semibold text-neutral-300">Worst-Case Scenarios (38 Items)</a>
-            <a href="#sec-recommendation" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">Recommendation & Successor Principles</a>
-            <a href="#sec-18" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">Sketch of a New BIP Framework</a>
-            <a href="#sec-19" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">Activation, Measurement & Sunset</a>
-            <a href="#sec-20" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">Conclusion & Open Questions</a>
-            <a href="#latex-appendix" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">Appendix (Mathematical Models)</a>
-            <a href="#references" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">References & Sources</a>
-        </nav>
-    </div>
-
-    <div class="w-full max-w-5xl px-6 sm:px-12 py-16 lg:py-28 bg-black/90 backdrop-blur-md relative z-10 mt-6">
+    <div class="w-full max-w-4xl px-6 sm:px-12 py-16 lg:py-28 bg-black/90 backdrop-blur-md relative z-10 mt-6">
         
-        <!-- Hero / Header Section (Right-Aligned) -->
-        <header class="mb-20 text-right w-full">
-            <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-[1.85rem] font-sans font-medium tracking-tight leading-snug mb-0 text-white whitespace-nowrap overflow-hidden text-ellipsis">
+        <header class="mb-20 text-right w-full pt-6">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-sans font-semibold tracking-tight leading-tight mb-4 text-white">
                 Consensus, Incentives, and the Limits of Soft-Fork Governance
             </h1>
         </header>
 
         <main class="font-sans text-base lg:text-lg section-container text-[#a1a1aa] bg-black w-full">
             
-            <!-- Abstract -->
             <section id="abstract" class="mb-20 scroll-mt-32 text-section w-full">
                 <div id="tesseract-container"></div>
                 <div class="mb-12 border-l-2 border-neutral-800 pl-6">
-                    <h2 class="font-sans font-medium text-white text-lg mb-4">Abstract</h2>
-                    <p class="mb-0 text-[#a1a1aa]">In August 2026, BIP-110 (Reduced Data Temporary Softfork) entered its mandatory signaling window with approximately 2.5 percent miner support. Nodes enforcing the proposal rejected non-signaling blocks and formed a minority chain that produced only two blocks before stalling, while the dominant chain continued under existing consensus rules. This paper analyzes the technical design of BIP-110, the incentive asymmetry it sought to address, the game-theoretic consequences of its activation parameters, and the historical context that shaped both the proposal and its rejection. It argues that activation under such low legitimacy would have damaged Bitcoin’s consensus process more severely than the observed outcome, yet the episode left unresolved a genuine principal-agent problem between miners, who capture one-time fees, and node operators, who bear permanent storage and legal costs. After examining precedents from the block-size wars and earlier data debates, the paper evaluates the result against Bitcoin’s coordination mechanisms and design priorities. It concludes that the main-chain rejection correctly preserved high legitimacy thresholds and neutrality, while the underlying externality remains a structural vulnerability. A stricter framework for any future consensus-level response to resource externalities is outlined.</p>
+                    <h2 class="font-sans font-medium text-white text-lg mb-4 text-left">Abstract</h2>
+                    <p class="mb-0 text-[#a1a1aa]">In August 2026, BIP-110 (Reduced Data Temporary Softfork) entered its mandatory signaling window with approximately 2.5 percent miner support. Nodes enforcing the proposal rejected non-signaling blocks and formed a minority chain that produced only two blocks before stalling, while the dominant chain continued under existing consensus rules. This paper analyzes the technical design of BIP-110, the incentive asymmetry it sought to address, the game-theoretic consequences of its activation parameters, and the historical context that shaped both the proposal and its rejection. It argued that activation under such low legitimacy would have damaged Bitcoin’s consensus process more severely than the observed outcome, yet the episode left unresolved a genuine principal-agent problem between miners, who capture one-time fees, and node operators, who bear permanent storage and legal costs. After examining precedents from the block-size wars and earlier data debates, the paper evaluates the result against Bitcoin’s coordination mechanisms and design priorities. It concludes that the main-chain rejection correctly preserved high legitimacy thresholds and neutrality, while the underlying externality remains a structural vulnerability. A stricter framework for any future consensus-level response to resource externalities is outlined.</p>
                 </div>
             </section>
 
-            <!-- Introduction -->
             <section id="introduction" class="mb-16 scroll-mt-24 text-section w-full">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal">Introduction</h2>
+                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal text-left">Introduction</h2>
                 
-                <p class="text-[#a1a1aa] mb-10">Bitcoin’s consensus rules are intentionally difficult to alter. This difficulty is not a defect, it is a central security and governance feature. A soft fork that changes the definition of validity binds every full node and every economic actor who treats the chain as Bitcoin. When such a change is proposed with narrow support, the network must choose between retaining the existing rule set and accepting the risk of fragmentation or eroded legitimacy.</p>
+                <p class="text-[#a1a1aa]">Bitcoin’s consensus rules are intentionally difficult to alter. This difficulty is not a defect, it is a central security and governance feature. A soft fork that changes the definition of validity binds every full node and every economic actor who treats the chain as Bitcoin. When such a change is proposed with narrow support, the network must choose between retaining the existing rule set and accepting the risk of fragmentation or eroded legitimacy.</p>
                 
-                <p class="text-[#a1a1aa] mb-10">BIP-110 forced exactly this choice. Formally named the Reduced Data Temporary Softfork and published under the pseudonym Dathon Ohm, the proposal aimed to impose a temporary set of consensus restrictions on several techniques used to embed arbitrary data in Bitcoin transactions. Its supporters argued that inscriptions, large OP_RETURN payloads, and related constructions had converted a material portion of blockspace into permanent non-monetary storage. They emphasized a structural asymmetry: miners receive a one-time fee for inclusion, while full nodes permanently store the data and absorb associated costs, including potential legal exposure to illegal content. The proposal was framed as a limited, expiring intention intended to protect Bitcoin’s function as money and the long-term viability of independent node operation.</p>
+                <p class="text-[#a1a1aa]">BIP-110 forced exactly this choice. Formally named the Reduced Data Temporary Softfork and published under the pseudonym Dathon Ohm, the proposal aimed to impose a temporary set of consensus restrictions on several techniques used to embed arbitrary data in Bitcoin transactions. Its supporters argued that inscriptions, large OP_RETURN payloads, and related constructions had converted a material portion of blockspace into permanent non-monetary storage. They emphasized a structural asymmetry: miners receive a one-time fee for inclusion, while full nodes permanently store the data and absorb associated costs, including potential legal exposure to illegal content. The proposal was framed as a limited, expiring intention intended to protect Bitcoin’s function as money and the long-term viability of independent node operation.</p>
                 
-                <p class="text-[#a1a1aa] mb-10">Critics rejected both the diagnosis and the remedy. They contended that BIP-110 encoded contested value judgments about legitimate uses of blockspace into consensus rules, that its activation design was reckless, and that permissionless neutrality is more foundational to Bitcoin than any particular vision of monetary purity. On 9 August 2026 the mandatory window began at block 961,632. Enforcing nodes diverged onto a minority tip that advanced only two blocks. The dominant chain, backed by the vast majority of hashrate, continued without interruption. The economically relevant network therefore retained its prior rules.</p>
+                <p class="text-[#a1a1aa]">Critics rejected both the diagnosis and the remedy. They contended that BIP-110 encoded contested value judgments about legitimate uses of blockspace into consensus rules, that its activation design was reckless, and that permissionless neutrality is more foundational to Bitcoin than any particular vision of monetary purity. On 9 August 2026 the mandatory window began at block 961,632. Enforcing nodes diverged onto a minority tip that advanced only two blocks. The dominant chain, backed by the vast majority of hashrate, continued without interruption. The economically relevant network therefore retained its prior rules.</p>
                 
-                <p class="text-[#a1a1aa] mb-10">This paper treats the BIP-110 conflict as a case study in Bitcoin’s contemporary governance. It does not presuppose that either arbitrary data is inherently harmful or any data limit constitutes censorship is self-evidently true. Instead it examines the proposal’s technical mechanics, the incentive misalignment it attempted to correct, the strategic consequences of its activation parameters, and the historical patterns that informed both sides. The central claims are two. First, activation of BIP-110 under the observed levels of support would have inflicted greater damage on Bitcoin’s consensus legitimacy than the rejection that occurred. Second, the rejection left intact a real externality, permanent data costs and legal risks borne by node operators, that will continue to generate pressure. The final sections therefore derive stricter principles that any future attempt to address resource externalities at the consensus layer should satisfy.</p>
+                <p class="text-[#a1a1aa]">This paper treats the BIP-110 conflict as a case study in Bitcoin’s contemporary governance. It does not presuppose that either arbitrary data is inherently harmful or any data limit constitutes censorship is self-evidently true. Instead it examines the proposal’s technical mechanics, the incentive misalignment it attempted to address, the strategic consequences of its activation parameters, and the historical patterns that informed both sides. The central claims are two. First, activation of BIP-110 under the observed levels of support would have inflicted greater damage on Bitcoin’s consensus legitimacy than the rejection that occurred. Second, the rejection left intact a real externality, permanent data costs and legal risks borne by node operators, that will continue to generate pressure. The final sections therefore derive stricter principles that any future attempt to address resource externalities at the consensus layer should satisfy.</p>
                 
                 <p class="text-[#a1a1aa]">The analysis moves from technical description through incentive and game-theoretic examination, historical comparison, normative assessment, and concrete recommendations. The focus throughout remains the durability of Bitcoin’s coordination mechanisms rather than the short-term success or failure of any single faction.</p>
             </section>
 
             <section id="sec-1" class="mb-16 scroll-mt-24 text-section w-full">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal">Technical Overview of BIP-110</h2>
+                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal text-left">Technical Overview of BIP-110</h2>
                 <p class="text-[#a1a1aa]">BIP-110, formally titled the Reduced Data Temporary Softfork, proposed a time-limited set of additional consensus rules intended to restrict several methods of embedding arbitrary data in Bitcoin transactions. The proposal was authored under the pseudonym Dathon Ohm and first circulated in late 2025 before receiving its BIP number. It was designed as a soft fork: the new rules would be stricter than existing consensus rules, rendering certain previously valid transactions invalid, while remaining backward compatible for nodes that did not enforce them.</p>
                 <p class="text-[#a1a1aa]">The core restrictions targeted the primary techniques used by Ordinals inscriptions, large <code>OP_RETURN</code> payloads, BRC-20 style tokens, and related constructions. Under the proposed rules, most new transaction outputs would be limited to 34 bytes, with an exception allowing <code>OP_RETURN</code> outputs up to 83 bytes. Data pushes and certain witness stack elements would be capped at 256 bytes. Additional constraints applied to Taproot: annexes would be disallowed, control blocks would face size limits that effectively restricted deep script trees, and specific opcodes including <code>OP_IF</code> and <code>OP_NOTIF</code> within Tapscripts would be restricted. Undefined witness versions would become unspendable during the active period.</p>
                 <p class="text-[#a1a1aa]">A critical design choice was the treatment of existing outputs. Any UTXO created before activation would remain permanently exempt from the new rules. This grandfathering provision ensured that pre-existing funds could still be spent under the prior validity conditions and removed the risk of freezing coins. The restrictions themselves were temporary. Once activated, the additional rules would remain in force for 52,416 blocks, approximately one year, after which they would expire automatically and the prior consensus rules would resume.</p>
@@ -185,7 +157,7 @@
             </section>
 
             <section id="sec-2" class="mb-16 scroll-mt-24 text-section w-full">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal">Activation Mechanism and Design Choices</h2>
+                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal text-left">Activation Mechanism and Design Choices</h2>
                 <p class="text-[#a1a1aa]">BIP-110 employed a modified version of the BIP9 version-bits signaling framework. Miners were expected to indicate support by setting version bit 4 in the blocks they produced. Under standard BIP9 practice, a soft fork typically requires a high threshold, commonly 95 percent of blocks within a difficulty adjustment period of 2,016 blocks, before lock-in can occur. BIP-110 deliberately lowered this threshold to 55 percent, equivalent to 1,109 signaling blocks out of 2,016. The designers treated the reduced threshold as necessary because miner incentives were expected to conflict with the proposal’s goal of limiting high-data transactions that generate fees.</p>
                 <p class="text-[#a1a1aa]">If the 55 percent threshold was never reached during ordinary signaling, the proposal included a mandatory signaling window. This window was scheduled to begin at block height 961,632, which arrived in early August 2026. During the mandatory window, any node enforcing BIP-110 was required to treat blocks that did not set version bit 4 as invalid. The window was defined to run through block 963,647. Lock-in was scheduled to occur no later than block 963,648 if the mandatory phase completed, with the new consensus rules becoming active at block 965,664. Once active, the additional restrictions would remain in force for 52,416 blocks before automatic expiry.</p>
                 <p class="text-[#a1a1aa]">These parameters produced a distinctive activation profile. In the difficulty period immediately preceding the mandatory window, only 51 blocks signaled support, corresponding to roughly 2.53 percent of the period. When block 961,632 arrived, enforcing nodes began rejecting non-signaling blocks and followed an alternative tip produced by a small number of miners associated with the Ocean pool. That minority tip advanced only two blocks. The dominant chain, which continued to accept non-signaling blocks under existing rules, retained virtually all hashrate and economic activity.</p>
@@ -193,7 +165,7 @@
             </section>
 
             <section id="sec-3" class="mb-16 scroll-mt-24 text-section w-full">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal">The Incentive Misalignment Between Miners and Node Operators</h2>
+                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal text-left">The Incentive Misalignment Between Miners and Node Operators</h2>
                 <p class="text-[#a1a1aa]">The central economic claim advanced by supporters of BIP-110 rests on a structural asymmetry between the parties who include data and the parties who permanently store it. Miners receive a one-time fee for incorporating a transaction into a block. Once that block is accepted by the network, the data it contains becomes part of the permanent ledger. Full nodes, particularly those that retain the complete historical chain, thereafter bear the ongoing costs of storage, bandwidth, verification, and potential legal exposure associated with that data. The private benefit of inclusion is captured at the moment of mining; the long-term costs are distributed across the set of validating and archival nodes.</p>
                 <p class="text-[#a1a1aa]">This arrangement constitutes a classic externality. The fee market prices the scarce resource of blockspace at the time of inclusion and thereby rations access according to willingness to pay. It does not, however, incorporate the permanent marginal cost imposed on every node that continues to store and serve the data. A transaction that embeds a large arbitrary payload can therefore be rational for both the data publisher and the miner while remaining collectively costly for the node network. Over repeated instances the cumulative effect raises the resource requirements of running a fully validating node and increases the surface area for legal or regulatory pressure, especially in jurisdictions that treat certain categories of stored content as prohibited.</p>
                 <p class="text-[#a1a1aa]">Local policy tools available to node operators mitigate but do not eliminate the problem. Mempool and relay filters can prevent a node from propagating or accepting certain transactions into its own view of the mempool. They cannot prevent a miner from including a consensus-valid, high-fee transaction directly into a block. Once such a block is produced and accumulates sufficient proof-of-work, nodes that wish to remain on the heaviest valid chain must accept the data. Pruning reduces storage for some nodes yet does not remove the data from the network as a whole, nor does it eliminate legal questions that may attach to historical chain data. Alternative clients with stricter default policies shift individual node behavior without binding the miners who collect fees under the prevailing consensus rules.</p>
@@ -201,7 +173,7 @@
             </section>
 
             <section id="sec-4" class="mb-16 scroll-mt-24 text-section w-full">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal">Data Storage Externalities and Legal-Risk Arguments</h2>
+                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal text-left">Data Storage Externalities and Legal-Risk Arguments</h2>
                 <p class="text-[#a1a1aa]">Beyond the pure resource costs of storage and bandwidth, BIP-110 supporters advanced a second and more politically charged externality: the legal risk that accompanies permanent storage of arbitrary data. Because Bitcoin’s ledger is append-only and globally replicated among archival nodes, any content successfully embedded in a mined block becomes part of the historical record that those nodes retain. When that content includes material prohibited under the laws of a given jurisdiction, particularly child sexual abuse material, every node that stores the full chain may be exposed to possession or distribution liability under local statutes.</p>
                 <p class="text-[#a1a1aa]">This risk is asymmetric in two respects. First, the data publisher and the miner who collected the fee face no ongoing storage obligation after inclusion, while archival nodes do. Second, legal exposure is jurisdiction-dependent. A node operator in a jurisdiction with aggressive enforcement faces a different risk profile from one in a more permissive environment, yet both store the same global dataset. Supporters of BIP-110 argued that this combination creates a slow centralizing pressure: as the volume of potentially illicit data grows, the set of individuals and institutions willing to run fully validating archival nodes shrinks, leaving validation increasingly concentrated among larger, professionally managed, or geographically selective operators.</p>
                 <p class="text-[#a1a1aa]">The proposal treated temporary consensus limits as a partial mitigation. By raising the cost of large-scale data embedding for a defined period, the rules would reduce the rate at which new high-risk material entered the permanent ledger. Grandfathering of pre-activation outputs ensured that existing data remained spendable, while the automatic expiry after approximately one year limited the duration of the intervention. In this framing, the legal risk was not a hypothetical edge case but a structural threat to the breadth of the node network itself.</p>
@@ -210,7 +182,7 @@
             </section>
 
             <section id="sec-5" class="mb-16 scroll-mt-24 text-section w-full">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal">Historical Precedents and Prior Spam Waves</h2>
+                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal text-left">Historical Precedents and Prior Spam Waves</h2>
                 <p class="text-[#a1a1aa]">Bitcoin has confronted resource and data-abuse questions since its earliest years. Satoshi Nakamoto and the initial developers introduced practical limits on dust outputs and related anti-spam measures when low-value transaction floods threatened to degrade network performance. These early interventions operated primarily through policy and node software defaults rather than through repeated consensus changes. They established a pattern in which clear resource attacks were met with pragmatic restrictions while the definition of validity itself remained stable.</p>
                 <p class="text-[#a1a1aa]">The history of <code>OP_RETURN</code> illustrates the same tension in more recent form. <code>OP_RETURN</code> was introduced as a provably unspendable output type intended for small data carriers. For years its size was constrained by standardness policy rather than by consensus rules. Periodic proposals to raise or remove those policy limits generated debate about whether Bitcoin should facilitate greater data embedding. In 2025, Bitcoin Core’s default relay policy was relaxed in a manner that BIP-110 supporters later cited as removing a soft guardrail and contributing to increased non-monetary data volume. The subsequent push for consensus-level limits can therefore be read as a reaction to a perceived shift from policy restraint toward greater accommodation of arbitrary data.</p>
                 <p class="text-[#a1a1aa]">The most consequential precedent remains the block-size wars of 2015 to 2017. That conflict centered on whether to increase the block weight limit to raise transaction throughput. Advocates of larger blocks argued that capacity constraints were artificially suppressing Bitcoin’s growth as a payment network. Opponents emphasized the resulting increase in node resource requirements and the risk of centralizing validation among well-resourced operators. The eventual outcome on the dominant chain was the activation of SegWit under conditions of broad support, accompanied by a hard-fork split that created Bitcoin Cash. The episode demonstrated two enduring lessons. First, attempts to force a resource-related rule change against substantial opposition produce lasting fragmentation and competing network effects. Second, the chain that preserved higher legitimacy thresholds for consensus changes retained the overwhelming share of economic activity, security budget, and brand recognition.</p>
@@ -218,7 +190,7 @@
             </section>
 
             <section id="sec-6" class="mb-16 scroll-mt-24 text-section w-full">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal">Game-Theoretic Analysis of Signaling and Thresholds</h2>
+                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal text-left">Game-Theoretic Analysis of Signaling and Thresholds</h2>
                 <p class="text-[#a1a1aa]">The activation design of BIP-110 can be analyzed as a coordination game under incomplete alignment of payoffs. In the standard BIP9 framework, a high signaling threshold, typically 95 percent of blocks within a 2,016-block difficulty period, functions as a coordination device. It requires that a large fraction of hashrate visibly commit to the new rules before lock-in. The high bar reduces the probability of activation without rough consensus and thereby lowers the expected cost of a chain split. Miners who signal do so in the knowledge that activation is unlikely unless a substantial coalition forms. Nodes that prepare to enforce the new rules can anticipate that the economically relevant chain will move with them if the threshold is met.</p>
                 <p class="text-[#a1a1aa]">BIP-110 altered this structure by lowering the threshold to 55 percent and by adding a mandatory signaling window. The reduced threshold changes the point at which a minority of hashrate can trigger lock-in under ordinary conditions. More importantly, the mandatory window converts the later phase of the process into a forced divergence for any node that elects to enforce the proposal. Once block 961,632 is reached, enforcing nodes must reject blocks that do not set the designated version bit. This rule creates a sharp strategic choice: either abandon the proposal or leave the heaviest chain.</p>
                 <p class="text-[#a1a1aa]">Miner payoffs remain straightforward. Rational miners maximize the sum of block subsidy and transaction fees. A proposal that renders a class of currently high-fee transactions invalid reduces expected revenue for any miner who expects those transactions to continue. Lowering the signaling threshold does not alter this payoff; it only changes the mechanical conditions under which a low-support coalition can force enforcing nodes off the main chain. In the period preceding the mandatory window, signaling remained near 2.5 percent. This level is consistent with a dominant strategy of non-signaling for the large majority of hashrate.</p>
@@ -226,7 +198,7 @@
             </section>
 
             <section id="sec-7" class="mb-16 scroll-mt-24 text-section w-full">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal">The Minority Chain Outcome and What It Revealed</h2>
+                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal text-left">The Minority Chain Outcome and What It Revealed</h2>
                 <p class="text-[#a1a1aa]">The mandatory signaling window of BIP-110 opened at block 961,632 in early August 2026. Nodes configured to enforce the proposal began rejecting blocks that did not set version bit 4. A non-signaling block produced by a major pool was accepted by the dominant network and rejected by enforcing nodes, producing an immediate divergence. An alternative block mined through the Ocean pool’s infrastructure and associated with the Roughnecks group became the first tip of the minority chain. That chain advanced only one additional block before stalling. Within hours the dominant chain had extended by dozens of blocks; within a day the gap measured in the hundreds. No significant recovery of hashrate to the minority tip occurred.</p>
                 <p class="text-[#a1a1aa]">The distribution of work made the result inevitable under Bitcoin’s existing consensus rules. In the difficulty period preceding the window, only 51 of 2,016 blocks had signaled support, or approximately 2.53 percent. Once the window opened, the overwhelming majority of hashrate continued to produce non-signaling blocks. The minority chain inherited the full difficulty target of the parent chain while commanding only a negligible fraction of the network’s computational power. Under the heaviest-chain selection rule, the dominant chain accumulated work at a vastly higher rate and rapidly outpaced the alternative history.</p>
                 <p class="text-[#a1a1aa]">Economic recognition followed hashrate. No major exchange, custodian, or payment service publicly treated the minority tip as the continuation of Bitcoin. Liquidity, price discovery, and wallet infrastructure remained on the dominant chain. The absence of economic nodes willing to credit the minority history ensured that even the limited hashrate that initially appeared had little incentive to remain. Some supporters of the proposal subsequently discussed altering the proof-of-work algorithm on the stalled branch in order to create a viable alternative chain. That discussion itself illustrated how quickly a failed soft-fork attempt can escalate toward explicit chain separation.</p>
@@ -234,7 +206,7 @@
             </section>
 
             <section id="sec-8" class="mb-16 scroll-mt-24 text-section w-full">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal">Philosophical Divide: Monetary Purpose vs. Neutrality</h2>
+                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal text-left">Philosophical Divide: Monetary Purpose vs. Neutrality</h2>
                 <p class="text-[#a1a1aa]">Beneath the technical and game-theoretic disputes surrounding BIP-110 lay a deeper disagreement about the nature and priorities of Bitcoin itself. Two coherent but incompatible philosophical framings shaped the arguments on each side.</p>
                 <p class="text-[#a1a1aa]">The first framing, advanced most clearly by supporters of the proposal, holds that Bitcoin’s primary purpose is to function as peer-to-peer electronic cash and sound money. On this view, the proposal’s value derives from its ability to transfer and store monetary value without trusted intermediaries, under conditions of credible scarcity and decentralized validation. Non-monetary uses of blockspace are tolerable only insofar as they do not undermine the conditions that sustain that monetary function. When large volumes of arbitrary data raise the long-term costs of running fully validating nodes, distort fee markets away from payments, or introduce legal risks that discourage independent node operation, those uses become a threat to the system’s core purpose. Temporary consensus limits are then justified as a defensive measure to preserve the monetary character of the network. Neutrality remains important, yet it is instrumental rather than absolute: neutrality that systematically erodes the node network ceases to serve the reasons Bitcoin was created.</p>
                 <p class="text-[#a1a1aa]">The opposing framing treats permissionless neutrality as foundational rather than instrumental. Bitcoin’s defining property is the uniform enforcement of consensus rules without regard to the semantic content, social desirability, or economic category of valid transactions. Once the protocol begins distinguishing monetary from non-monetary data at the level of validity, it creates a permanent political interface through which future actors can demand further restrictions. Fee-paying use of blockspace, whatever its purpose, is legitimate under the existing rules. Node operators who object to particular uses retain the tools of policy, client choice, and pruning; they do not acquire the right to rewrite validity conditions for the entire network. On this view, the monetary properties of Bitcoin emerge from, and remain dependent upon, the refusal to let contested preferences about proper usage alter the base layer. Sacrificing neutrality in the name of monetary purity risks destroying the very feature that makes the money trustworthy.</p>
@@ -243,222 +215,108 @@
             </section>
 
             <section id="sec-9" class="mb-16 scroll-mt-24 text-section w-full">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal">Soft Power of Core, Alternative Clients, and Economic Nodes</h2>
+                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal text-left">Soft Power of Core, Alternative Clients, and Economic Nodes</h2>
                 <p class="text-[#a1a1aa]">Bitcoin’s governance cannot be reduced to hashrate alone. Software clients and the economic actors who run them exercise forms of soft power that shape which rules are practical to enforce and which histories carry value. The BIP-110 conflict illustrated both the reach and the limits of that soft power.</p>
                 <p class="text-[#a1a1aa]">Bitcoin Core remains the dominant reference implementation. The large majority of listening nodes, mining pool software, exchange infrastructure, and wallet backends run Core or closely related code. Its maintainers therefore influence default relay policy, mempool behavior, and the practical definition of standard transactions. Decisions about whether to relax or tighten policy defaults, as occurred with <code>OP_RETURN</code> limits in the period preceding BIP-110, alter the cost and visibility of certain data-carrying constructions without changing consensus rules. Core’s refusal to implement or endorse BIP-110 meant that the proposal lacked the default-client pathway that has historically accompanied successful soft forks. This absence significantly constrained the proposal’s reach among operators who follow reference releases.</p>
                 <p class="text-[#a1a1aa]">Alternative clients supplied the principal enforcement path for BIP-110. Bitcoin Knots, which maintains more restrictive default policies on data and relay, and related patched versions provided the software that enforcing nodes ran during the mandatory window. Client diversity therefore enabled a visible minority of operators to adopt alternative validity rules and to produce the short-lived minority chain. The episode demonstrated that alternative implementations can translate philosophical disagreement into concrete network divergence. At the same time, it showed the strict limit of that capacity: without accompanying hashrate and economic recognition, the alternative client’s rules remain confined to a low-work tip that the broader network ignores.</p>
             </section>
 
             <section id="sec-10" class="mb-16 scroll-mt-24 text-section w-full">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal">Hashrate and Economic Majority as Coordination Mechanisms</h2>
+                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal text-left">Hashrate and Economic Majority as Coordination Mechanisms</h2>
                 <p class="text-[#a1a1aa]">Bitcoin coordinates on a single history through the interaction of two mechanisms: the accumulation of proof-of-work under the heaviest-chain rule and the assignment of economic value by actors who accept that history. The BIP-110 episode provided a clear demonstration of both mechanisms operating under conditions of deliberate rule divergence.</p>
                 <p class="text-[#a1a1aa]">The heaviest-chain rule selects, among competing valid histories, the one that embodies the greatest cumulative proof-of-work. Hashrate is the practical expression of this rule. Miners expend computational resources to extend a chosen tip; the tip that receives the preponderance of that expenditure pulls ahead in accumulated work and becomes increasingly costly to overtake. In ordinary operation the rule produces rapid convergence. When a subset of nodes adopts alternative validity conditions, the rule continues to operate without modification: the history that receives the preponderance of hashrate outpaces any alternative, regardless of the philosophical merits claimed for the alternative rules.</p>
                 <p class="text-[#a1a1aa]">The economic majority supplies the complementary mechanism. Exchanges, custodians, payment processors, and holders determine which history is treated as Bitcoin for purposes of account balances, trade settlement, and price discovery. Their collective recognition converts a chain tip from a technical artifact into an economic asset. Without that recognition a tip may continue to accumulate occasional blocks yet remains irrelevant to the monetary system Bitcoin is intended to support. Economic nodes, in turn, have strong incentives to follow the history that already commands hashrate and liquidity, reinforcing the focal point created by proof-of-work.</p>
             </section>
 
             <section id="sec-11" class="mb-16 scroll-mt-24 text-section w-full">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal">Critiques of the 55% Threshold and Mandatory Signaling</h2>
+                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal text-left">Critiques of the 55% Threshold and Mandatory Signaling</h2>
                 <p class="text-[#a1a1aa]">The activation parameters chosen for BIP-110 departed from prior soft-fork practice in two material respects: the reduction of the signaling threshold from the conventional range of 90 to 95 percent to 55 percent, and the introduction of a mandatory signaling window that required enforcing nodes to reject non-signaling blocks. Both choices have been subject to sustained criticism on grounds of legitimacy, split risk, and long-term governance incentives.</p>
                 <p class="text-[#a1a1aa]">High thresholds in the BIP9 framework serve a coordination function. By requiring that a large majority of hashrate visibly commit to new rules before lock-in, they make activation improbable without rough consensus. The high bar reduces the probability that a soft fork will proceed while a substantial fraction of the network remains opposed, and it thereby limits the expected cost of chain splits. Miners and economic nodes can treat signaling as informative precisely because activation is unlikely to occur on the basis of a narrow coalition.</p>
                 <p class="text-[#a1a1aa]">BIP-110’s 55 percent threshold inverted this logic. The lower bar was selected because miner incentives were expected to conflict with the proposal’s aim of restricting high-data, fee-generating transactions. In effect the design treated miner resistance as a problem to be engineered around rather than as information about the absence of consensus. A threshold that can be met by a bare majority of hashrate, or that can be bypassed entirely by a mandatory window, transforms activation from a demonstration of broad agreement into a mechanical possibility under partial support.</p>
             </section>
 
             <section id="sec-12" class="mb-16 scroll-mt-24 text-section w-full">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal">Long-Term Governance and Ossification Risks</h2>
+                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal text-left">Long-Term Governance and Ossification Risks</h2>
                 <p class="text-[#a1a1aa]">The BIP-110 episode carries consequences that extend beyond the immediate fate of one proposal. Bitcoin’s governance faces two opposing long-term risks: excessive ossification that prevents adaptation to genuine structural problems, and erosion of legitimacy standards that makes contentious rule changes easier to initiate and more damaging when they fail. The events of August 2026 interacted with both risks simultaneously.</p>
                 <p class="text-[#a1a1aa]">On one side, the decisive rejection of a low-support soft fork reinforces the practical requirement of broad agreement before consensus rules can change. High legitimacy thresholds protect the network from restricted political contests over the definition of validity. They preserve the focal quality of the existing rule set and reduce the frequency of disruptive partitions. In this respect the outcome aligned with a conservative governance posture that treats stability of the rule set as a core security property. Yet the same posture, if applied without regard to the underlying problem the proposal sought to address, contributes to ossification. The permanent data-cost and legal-risk externalities that motivated BIP-110 remain in place. If every future attempt to confront those externalities at the consensus layer is met with the same combination of miner resistance and high procedural barriers, the node network may continue to absorb rising costs without institutional recourse.</p>
             </section>
 
             <section id="sec-13" class="mb-16 scroll-mt-24 text-section w-full">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal">Evaluation: Was the Outcome Net Positive for Bitcoin?</h2>
+                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal text-left">Evaluation: Was the Outcome Net Positive for Bitcoin?</h2>
                 <p class="text-[#a1a1aa]">The central evaluative question is whether the events of August 2026 left Bitcoin better or worse positioned than the principal counterfactual: activation of BIP-110 under the observed levels of support. A balanced assessment must separate the effects of the rejection itself from the effects of the process that produced it and from the structural problem left unresolved.</p>
                 <p class="text-[#a1a1aa]">The rejection itself carried several positive consequences. Consensus rules on the economically relevant chain remained unchanged despite a determined attempt to alter them with approximately 2.5 percent prior signaling. High legitimacy thresholds for soft-fork activation were thereby reinforced in practice. The primacy of hashrate and economic majority as coordination mechanisms was demonstrated with unusual clarity: a minority of enforcing nodes could force a visible divergence, yet they could not compel the network to adopt their rules or to assign economic value to the alternative history. Permissionless neutrality with respect to the semantic content of valid transactions was preserved on the dominant chain. Relative to a counterfactual in which contested data limits became binding on the main chain under narrow support, the observed outcome avoided a more serious erosion of consensus legitimacy.</p>
                 <p class="text-[#a1a1aa]">Weighing these elements, the outcome was net positive relative to activation under low legitimacy. A soft fork that alters validity conditions for the entire network requires broad and durable support. BIP-110 never approached that condition. Allowing it to bind the dominant chain would have set a precedent more damaging to Bitcoin’s coordination mechanisms than the short-lived minority tip that actually occurred. At the same time, the episode was not costless. It raised the baseline expense of future disagreement and left a genuine structural tension intact. The net result is therefore best characterized as a defensive success for existing legitimacy standards, accompanied by unresolved pressures that will continue to test those standards in subsequent cycles of debate.</p>
             </section>
 
             <section id="sec-14" class="mb-16 scroll-mt-24 text-section w-full">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal">Persistent Structural Problems Left Unresolved</h2>
+                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal text-left">Persistent Structural Problems Left Unresolved</h2>
                 <p class="text-[#a1a1aa]">As detailed in the mechanic and economic syntheses of Sections 3 and 4, the core externality remains intact: miners capture one-time fee revenue while archival nodes absorb permanent storage and legal-risk burdens. Because local policy filters and alternative client defaults cannot prevent miners from including valid high-data transactions into blocks required by the heaviest-chain rule, the network continues to absorb unpriced resource externalities without a systemic coordination mechanism.</p>
             </section>
 
             <section id="sec-15" class="mb-16 scroll-mt-24 text-section w-full">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal">Design Intent and Satoshi-Era Principles</h2>
+                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal text-left">Design Intent and Satoshi-Era Principles</h2>
                 <p class="text-[#a1a1aa]">Any evaluation of contemporary consensus conflicts eventually turns to the design priorities visible in Bitcoin’s earliest documents and decisions. The whitepaper, Satoshi Nakamoto’s public correspondence, and the initial implementation choices supply the relevant evidence. These sources do not dictate a unique resolution to the BIP-110 dispute, yet they constrain the range of interpretations that can claim continuity with the system’s founding logic.</p>
                 <p class="text-[#a1a1aa]">The whitepaper defines Bitcoin as a peer-to-peer electronic cash system whose principal technical problem is double-spending without a trusted intermediary. Proof-of-work and the heaviest-chain rule supply the coordination mechanism that allows distributed nodes to converge on a single history. Nodes independently verify every transaction and block against the prevailing rules; hashrate makes the selected history costly to revise. The architecture therefore privileges two outcomes: reliable monetary transfer under fixed supply rules, and convergence on one ledger through the combination of computational work and independent validation.</p>
             </section>
 
             <section id="sec-16" class="mb-16 scroll-mt-24 text-section w-full">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal">Non-Consensus Alternatives and Their Limits</h2>
+                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal text-left">Non-Consensus Alternatives and Their Limits</h2>
                 <p class="text-[#a1a1aa]">The rejection of BIP-110 returned the network to the set of tools available outside consensus rule changes. These tools address aspects of data volume, node costs, and legal exposure, yet each operates under significant constraints that explain both their continued use and the recurring pressure for stronger measures.</p>
                 <p class="text-[#a1a1aa]">Mempool and relay policy remains the most widely deployed instrument. Node software can refuse to propagate or accept into its mempool transactions that exceed size, data-carrier, or script limits defined as standard. Bitcoin Core’s historical <code>OP_RETURN</code> policy and the stricter defaults maintained by clients such as Bitcoin Knots exemplify this approach. Policy reduces the visibility and relay success of disfavored constructions across large portions of the network. Its limit is structural: a miner who receives a high-fee transaction directly, or who chooses to bypass policy, can still include it in a valid block. Once that block accumulates sufficient work, nodes following the heaviest chain must accept the data.</p>
             </section>
 
             <!-- Worst-Case Scenarios -->
-            <section id="worst-case-scenarios" class="mb-16 scroll-mt-24 text-section w-full bg-neutral-950 p-8 rounded-2xl border border-neutral-900">
+            <section id="worst-case-scenarios" class="mb-16 scroll-mt-24 text-section w-full bg-neutral-950 p-6 sm:p-8 rounded-2xl border border-neutral-900">
                 <div class="mb-8">
-                    <h2 class="text-lg md:text-xl text-white font-medium mt-1">Worst-Case Scenarios Post-BIP-110</h2>
+                    <h2 class="text-lg md:text-xl text-white font-medium mt-1 text-left">Worst-Case Scenarios Post-BIP-110</h2>
                 </div>
 
-                <ul class="space-y-6 text-[#a1a1aa]">
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">01</span>
-                        <div><strong class="text-white">Uninterrupted acceleration of permanent high-volume data embedding:</strong> Without the temporary consensus limits, the lowest-cost and highest-capacity methods for embedding large arbitrary payloads remain fully valid. Data volume on the archival chain continues its prior trajectory with no protocol-level interruption, producing faster growth in storage and bandwidth requirements than would have occurred under BIP-110’s restrictions.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">02</span>
-                        <div><strong class="text-white">Permanent locking-in of the miner–node cost externality:</strong> The failure demonstrates that hashrate can successfully reject consensus rules designed to reduce high-data fee revenue. The structural pattern in which miners capture one-time fees while nodes permanently absorb storage and legal costs is thereby reinforced as the stable equilibrium, rather than temporarily interrupted.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">03</span>
-                        <div><strong class="text-white">Expanded and compounding legal surface area for archival nodes:</strong> The most convenient vectors for embedding material that creates possession or distribution liability remain open. Over time the chain accumulates a larger permanent archive of high-risk content than it would have under the proposed limits, increasing the cumulative legal exposure faced by anyone running a full archival node.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">04</span>
-                        <div><strong class="text-white">Stronger path dependence for data-centric secondary ecosystems:</strong> Protocols, marketplaces, and financial instruments that rely on cheap, reliable, permanent on-chain data continue to expand without a consensus-level headwind. The longer this regime persists, the larger and more politically resistant the constituency that will oppose any future attempt to impose similar limits.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">05</span>
-                        <div><strong class="text-white">Reinforced soft veto power of large mining pools over resource-related rule changes:</strong> The episode established that proposals reducing certain categories of fee revenue can be defeated by hashrate non-participation even when a minority of nodes strongly supports them. Future attempts to address node-cost externalities at the consensus layer now face a higher and more explicit barrier.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">06</span>
-                        <div><strong class="text-white">Faster practical crowding-out of ordinary monetary transactions during data demand spikes:</strong> High-data constructions remain fully available to bid for blockspace. Periods in which non-monetary demand sets elevated fee levels for extended durations become more frequent and more prolonged than they would have been under temporary invalidation of the largest data vectors.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">07</span>
-                        <div><strong class="text-white">Greater long-term attrition pressure on independent full-node operators:</strong> The specific data-driven component of rising resource costs and legal uncertainty continues without the one-year reduction BIP-110 would have supplied. This removes a potential pause or reversal in the forces pushing smaller and less-resourced operators out of archival validation.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">08</span>
-                        <div><strong class="text-white">Normalization of “data storage is a legitimate and permanent base-layer use” as the default market expectation:</strong> With no temporary consensus signal to the contrary, market participants and developers treat unrestricted permanent data embedding as the settled baseline. Shifting this expectation later becomes correspondingly more difficult.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">09</span>
-                        <div><strong class="text-white">Increased likelihood of repeated high-friction, low-success governance contests over the same issue:</strong> Because the underlying externality remains fully intact and the hashrate veto has been demonstrated, future proposals addressing the same problem are more likely to follow the same pattern: motivated minority support, aggressive activation parameters, temporary partitions, and eventual failure. Each cycle adds governance cost without resolution.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">10</span>
-                        <div><strong class="text-white">Weaker practical defense against external pressure that exploits permanent illicit content on the chain:</strong> A larger and continuously growing archive of high-liability material supplies a more durable lever for regulators, courts, or political actors seeking to pressure node operators or the network as a whole. The absence of a temporary consensus reduction in that archive leaves this attack surface more open than it would have been under BIP-110.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">11</span>
-                        <div><strong class="text-white">Hardening of hashrate as the effective gatekeeper for any future resource-limit proposals:</strong> The successful rejection of BIP-110 with minimal signaling establishes a clear precedent that consensus changes reducing high-data fee categories require strong miner cooperation. Subsequent proposals face an elevated and more explicit coordination barrier even if node-operator support is substantial.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">12</span>
-                        <div><strong class="text-white">Continued growth of technical workarounds and inscription-style innovations:</strong> Without a temporary consensus constraint, developers and users retain full incentive to refine and expand methods for embedding larger or more complex data within still-valid transaction structures. The technical frontier of permanent on-chain data continues to advance rather than being paused.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">13</span>
-                        <div><strong class="text-white">Greater divergence between node-operator interests and mining economics:</strong> The episode sharpens the visible conflict between those who bear permanent costs and those who collect inclusion fees. This deepens factional distrust and makes cooperative solutions on related resource questions harder to achieve in the future.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">14</span>
-                        <div><strong class="text-white">Increased operational and legal caution by potential new node operators:</strong> Prospective independent operators, observing that data-driven costs and legal risks continue without relief, face a higher perceived barrier to entry. The failure removes a potential temporary reduction in those barriers that BIP-110 would have provided.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">15</span>
-                        <div><strong class="text-white">Expansion of institutional narratives that Bitcoin’s base layer is unsuitable for ordinary users:</strong> As data-driven fee pressure and chain-growth concerns persist without interruption, narratives claiming the base layer is primarily for large or data-oriented actors gain additional empirical support. This accelerates the shift of ordinary monetary activity toward secondary layers or custodial solutions.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">16</span>
-                        <div><strong class="text-white">Stronger path dependence against later corrective soft forks:</strong> Every additional month or year of unrestricted high-volume data embedding creates more users, protocols, and economic interests invested in the status quo. The political and technical difficulty of activating similar limits in the future rises with the duration of the unrestricted regime.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">17</span>
-                        <div><strong class="text-white">Persistent elevation of the expected governance cost of disagreement:</strong> Because the underlying problem remains fully present and the hashrate veto has been demonstrated, future debates over data limits are more likely to recycle the same high-friction pattern of minority enforcement attempts, temporary partitions, and failure. The baseline cost of these contests stays elevated.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">18</span>
-                        <div><strong class="text-white">Reduced credibility of temporary or narrowly scoped consensus interventions:</strong> The failure of a proposal that was explicitly temporary and limited in scope weakens the practical case for any future time-bounded resource measures. Opponents can point to BIP-110 as evidence that even restrained, expiring rules cannot overcome hashrate resistance.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">19</span>
-                        <div><strong class="text-white">Greater accumulation of permanent high-liability content before any future intervention becomes feasible:</strong> The longer the unrestricted period continues, the larger the archive of potentially problematic material that will already exist on the chain if and when a later proposal eventually succeeds. Grandfathering will then protect a bigger stock of high-risk data.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">20</span>
-                        <div><strong class="text-white">Reinforcement of the view that node-operator concerns can be safely ignored when they conflict with fee revenue:</strong> The outcome supplies a concrete demonstration that a motivated minority of nodes cannot compel changes opposed by hashrate. This weakens the practical influence of pure node-operator preference in future resource and validity debates.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">21</span>
-                        <div><strong class="text-white">Long-term normalization of elevated baseline fees driven by persistent data demand:</strong> Without a temporary reduction in the validity of high-data constructions, structural demand for permanent data embedding continues to influence the fee market. Ordinary monetary users face a higher average cost of on-chain settlement than would have prevailed during a year of consensus limits.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">22</span>
-                        <div><strong class="text-white">Accelerated migration of monetary activity off the base layer:</strong> As data-driven fee pressure and chain-growth concerns persist without interruption, more users and applications treat the base layer as unsuitable for routine value transfer. This speeds the shift toward secondary layers, custodial services, and alternative systems, reducing the monetary density of the main chain.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">23</span>
-                        <div><strong class="text-white">Greater institutional preference for pruned or non-archival configurations:</strong> Facing continued data growth and legal surface area, more operators choose to prune historical data or avoid full archival roles. While technically permitted, the widespread adoption of non-archival setups reduces the number of independently verified full histories and weakens one check on chain integrity.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">24</span>
-                        <div><strong class="text-white">Expansion of specialized “data-friendly” mining and relay infrastructure:</strong> Pools and services that deliberately optimize for high-data transaction flow gain further advantage. The economic niche for infrastructure that prioritizes data inclusion over node-cost concerns becomes more entrenched, reinforcing the fee-extraction equilibrium.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">25</span>
-                        <div><strong class="text-white">Weakened practical ability to coordinate future temporary interventions:</strong> The failure of an explicitly time-limited proposal makes subsequent attempts at temporary consensus measures politically harder. Opponents can argue that even restrained, expiring rules cannot overcome hashrate resistance, raising the coordination threshold for any similar future effort.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">26</span>
-                        <div><strong class="text-white">Increased use of Bitcoin’s permanent ledger as a strategic liability vector:</strong> Actors who wish to create legal or reputational pressure on the network face a larger and continuously growing set of high-liability content already embedded. The absence of a temporary throttle leaves this vector more open and more potent over time.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">27</span>
-                        <div><strong class="text-white">Deepening software and cultural divergence between restrictive and permissive clients:</strong> Clients that maintain strict data policies (such as Knots) and those that follow more permissive defaults continue to diverge in mempool behavior and user base. The failure of a consensus bridge between these approaches entrench parallel node cultures with reduced shared assumptions.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">28</span>
-                        <div><strong class="text-white">Higher long-term political cost of defending node operation:</strong> As the permanent archive of contested content grows without pause, public and regulatory narratives that framing running a full node as legally hazardous gain additional material. Defending the legitimacy of independent validation becomes more expensive in political and legal terms.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">29</span>
-                        <div><strong class="text-white">Reduced experimental space for monetary-priority protocol development:</strong> Developer attention and funding continue to respond to the unrestricted data environment. Projects and research oriented toward pure monetary efficiency or node-cost reduction receive relatively less oxygen than they would have during a period when large data constructions were temporarily constrained.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">30</span>
-                        <div><strong class="text-white">Compounding difficulty of ever restoring a higher-legitimacy path to resource limits:</strong> Each additional period of unrestricted high-volume data embedding increases the number of stakeholders who benefit from the status quo and who will resist future limits. The political and technical difficulty of activating similar limits in the future rises with the duration of the unrestricted regime.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">31</span>
-                        <div><strong class="text-white">Persistent elevation of the minimum viable resources required to run a fully validating archival node:</strong> Without the one-year reduction in high-data volume, the hardware, bandwidth, and storage floor for archival validation continues its prior upward trajectory. The entry cost for new independent operators rises faster than it would have under temporary consensus limits.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">32</span>
-                        <div><strong class="text-white">Greater market acceptance of custodial and light-client defaults as the practical norm:</strong> As full archival validation remains resource-intensive and legally uncertain without relief, more users and institutions default to custodial services or light clients. The social and economic expectation that ordinary participants run fully validating nodes weakens further.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">33</span>
-                        <div><strong class="text-white">Strengthened economic moat for large mining pools that specialize in high-data inclusion:</strong> Pools that efficiently efficiently capture fees from large-data transactions retain and expand their revenue advantage. The failure of BIP-110 removes a potential temporary disruption to that revenue stream, allowing these operations to consolidate their position more securely.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">34</span>
-                        <div><strong class="text-white">Increased difficulty of coordinating any future high-threshold resource soft fork:</strong> The demonstrated hashrate veto, combined with the continued growth of data-dependent stakeholders, raises the practical bar for assembling the broad coalition required under traditional 90–95% signaling thresholds. Future legitimate attempts face a colder coordination environment.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">35</span>
-                        <div><strong class="text-white">Expansion of narrative framing that treats node-cost concerns as anti-progress or anti-market:</strong> With unrestricted data embedding continuing as the baseline, arguments that prioritize node viability are more easily characterized as attempts to suppress legitimate market demand. This framing gains additional traction and makes subsequent debates more polarized.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">36</span>
-                        <div><strong class="text-white">Higher cumulative volume of permanent data that must be grandfathered in any later intervention:</strong> Every additional block of unrestricted high-data activity increases the stock of outputs and payloads that would be protected by grandfathering rules in a future proposal. Later interventions, if they ever occur, would leave a larger permanent archive untouched.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">37</span>
-                        <div><strong class="text-white">Reduced incentive for protocol-level research into more efficient data-handling or client-side validation techniques:</strong> While unrestricted data remains fully valid and fee-paying, the urgency of developing technical mitigations that preserve neutrality while lowering node burden is diminished. Research attention continues to flow toward accommodating data rather than constraining its externalities.</div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-neutral-500 font-mono text-xs mt-1">38</span>
-                        <div><strong class="text-white">Systemic long-term erosion of independent archival redundancy:</strong> Over decades, the accumulation of unmitigated storage and legal stressors creates a structurally fragile validation topology where archival nodes are operated exclusively by well-funded entities, fundamentally altering the trust assumptions of the network.</div>
-                    </li>
+                <ul class="space-y-6 text-[#a1a1aa] list-disc pl-6">
+                    <li><strong class="text-white">Uninterrupted acceleration of permanent high-volume data embedding:</strong> Without the temporary consensus limits, the lowest-cost and highest-capacity methods for embedding large arbitrary payloads remain fully valid. Data volume on the archival chain continues its prior trajectory with no protocol-level interruption, producing faster growth in storage and bandwidth requirements than would have occurred under BIP-110’s restrictions.</li>
+                    <li><strong class="text-white">Permanent locking-in of the miner–node cost externality:</strong> The failure demonstrates that hashrate can successfully reject consensus rules designed to reduce high-data fee revenue. The structural pattern in which miners capture one-time fees while nodes permanently absorb storage and legal costs is thereby reinforced as the stable equilibrium, rather than temporarily interrupted.</li>
+                    <li><strong class="text-white">Expanded and compounding legal surface area for archival nodes:</strong> The most convenient vectors for embedding material that creates possession or distribution liability remain open. Over time the chain accumulates a larger permanent archive of high-risk content than it would have under the proposed limits, increasing the cumulative legal exposure faced by anyone running a full archival node.</li>
+                    <li><strong class="text-white">Stronger path dependence for data-centric secondary ecosystems:</strong> Protocols, marketplaces, and financial instruments that rely on cheap, reliable, permanent on-chain data continue to expand without a consensus-level headwind. The longer this regime persists, the larger and more politically resistant the constituency that will oppose any future attempt to impose similar limits.</li>
+                    <li><strong class="text-white">Reinforced soft veto power of large mining pools over resource-related rule changes:</strong> The episode established that proposals reducing certain categories of fee revenue can be defeated by hashrate non-participation even when a minority of nodes strongly supports them. Future attempts to address node-cost externalities at the consensus layer now face a higher and more explicit barrier.</li>
+                    <li><strong class="text-white">Faster practical crowding-out of ordinary monetary transactions during data demand spikes:</strong> High-data constructions remain fully available to bid for blockspace. Periods in which non-monetary demand sets elevated fee levels for extended durations become more frequent and more prolonged than they would have been under temporary invalidation of the largest data vectors.</li>
+                    <li><strong class="text-white">Greater long-term attrition pressure on independent full-node operators:</strong> The specific data-driven component of rising resource costs and legal uncertainty continues without the one-year reduction BIP-110 would have supplied. This removes a potential pause or reversal in the forces pushing smaller and less-resourced operators out of archival validation.</li>
+                    <li><strong class="text-white">Normalization of “data storage is a legitimate and permanent base-layer use” as the default market expectation:</strong> With no temporary consensus signal to the contrary, market participants and developers treat unrestricted permanent data embedding as the settled baseline. Shifting this expectation later becomes correspondingly more difficult.</li>
+                    <li><strong class="text-white">Increased likelihood of repeated high-friction, low-success governance contests over the same issue:</strong> Because the underlying externality remains fully intact and the hashrate veto has been demonstrated, future proposals addressing the same problem are more likely to follow the same pattern: motivated minority support, aggressive activation parameters, temporary partitions, and eventual failure. Each cycle adds governance cost without resolution.</li>
+                    <li><strong class="text-white">Weaker practical defense against external pressure that exploits permanent illicit content on the chain:</strong> A larger and continuously growing archive of high-liability material supplies a more durable lever for regulators, courts, or political actors seeking to pressure node operators or the network as a whole. The absence of a temporary consensus reduction in that archive leaves this attack surface more open than it would have been under BIP-110.</li>
+                    <li><strong class="text-white">Hardening of hashrate as the effective gatekeeper for any future resource-limit proposals:</strong> The successful rejection of BIP-110 with minimal signaling establishes a clear precedent that consensus changes reducing high-data fee categories require strong miner cooperation. Subsequent proposals face an elevated and more explicit coordination barrier even if node-operator support is substantial.</li>
+                    <li><strong class="text-white">Continued growth of technical workarounds and inscription-style innovations:</strong> Without a temporary consensus constraint, developers and users retain full incentive to refine and expand methods for embedding larger or more complex data within still-valid transaction structures. The technical frontier of permanent on-chain data continues to advance rather than being paused.</li>
+                    <li><strong class="text-white">Greater divergence between node-operator interests and mining economics:</strong> The episode sharpens the visible conflict between those who bear permanent costs and those who collect inclusion fees. This deepens factional distrust and makes cooperative solutions on related resource questions harder to achieve in the future.</li>
+                    <li><strong class="text-white">Increased operational and legal caution by potential new node operators:</strong> Prospective independent operators, observing that data-driven costs and legal risks continue without relief, face a higher perceived barrier to entry. The failure removes a potential temporary reduction in those barriers that BIP-110 would have provided.</li>
+                    <li><strong class="text-white">Expansion of institutional narratives that Bitcoin’s base layer is unsuitable for ordinary users:</strong> As data-driven fee pressure and chain-growth concerns persist without interruption, narratives claiming the base layer is primarily for large or data-oriented actors gain additional empirical support. This accelerates the shift of ordinary monetary activity toward secondary layers or custodial solutions.</li>
+                    <li><strong class="text-white">Stronger path dependence against later corrective soft forks:</strong> Every additional month or year of unrestricted high-volume data embedding creates more users, protocols, and economic interests invested in the status quo. The political and technical difficulty of activating similar limits in the future rises with the duration of the unrestricted regime.</li>
+                    <li><strong class="text-white">Persistent elevation of the expected governance cost of disagreement:</strong> Because the underlying problem remains fully present and the hashrate veto has been demonstrated, future debates over data limits are more likely to recycle the same high-friction pattern of minority enforcement attempts, temporary partitions, and failure. The baseline cost of these contests stays elevated.</li>
+                    <li><strong class="text-white">Reduced credibility of temporary or narrowly scoped consensus interventions:</strong> The failure of a proposal that was explicitly temporary and limited in scope weakens the practical case for any future time-bounded resource measures. Opponents can point to BIP-110 as evidence that even restrained, expiring rules cannot overcome hashrate resistance.</li>
+                    <li><strong class="text-white">Greater accumulation of permanent high-liability content before any future intervention becomes feasible:</strong> The longer the unrestricted period continues, the larger the archive of potentially problematic material that will already exist on the chain if and when a later proposal eventually succeeds. Grandfathering will then protect a bigger stock of high-risk data.</li>
+                    <li><strong class="text-white">Reinforcement of the view that node-operator concerns can be safely ignored when they conflict with fee revenue:</strong> The outcome supplies a concrete demonstration that a motivated minority of nodes cannot compel changes opposed by hashrate. This weakens the practical influence of pure node-operator preference in future resource and validity debates.</li>
+                    <li><strong class="text-white">Long-term normalization of elevated baseline fees driven by persistent data demand:</strong> Without a temporary reduction in the validity of high-data constructions, structural demand for permanent data embedding continues to influence the fee market. Ordinary monetary users face a higher average cost of on-chain settlement than would have prevailed during a year of consensus limits.</li>
+                    <li><strong class="text-white">Accelerated migration of monetary activity off the base layer:</strong> As data-driven fee pressure and chain-growth concerns persist without interruption, more users and applications treat the base layer as unsuitable for routine value transfer. This speeds the shift toward secondary layers, custodial services, and alternative systems, reducing the monetary density of the main chain.</li>
+                    <li><strong class="text-white">Greater institutional preference for pruned or non-archival configurations:</strong> Facing continued data growth and legal surface area, more operators choose to prune historical data or avoid full archival roles. While technically permitted, the widespread adoption of non-archival setups reduces the number of independently verified full histories and weakens one check on chain integrity.</li>
+                    <li><strong class="text-white">Expansion of specialized “data-friendly” mining and relay infrastructure:</strong> Pools and services that deliberately optimize for high-data transaction flow gain further advantage. The economic niche for infrastructure that prioritizes data inclusion over node-cost concerns becomes more entrenched, reinforcing the fee-extraction equilibrium.</li>
+                    <li><strong class="text-white">Weakened practical ability to coordinate future temporary interventions:</strong> The failure of an explicitly time-limited proposal makes subsequent attempts at temporary consensus measures politically harder. Opponents can argue that even restrained, expiring rules cannot overcome hashrate resistance, raising the coordination threshold for any similar future effort.</li>
+                    <li><strong class="text-white">Increased use of Bitcoin’s permanent ledger as a strategic liability vector:</strong> Actors who wish to create legal or reputational pressure on the network face a larger and continuously growing set of high-liability content already embedded. The absence of a temporary throttle leaves this vector more open and more potent over time.</li>
+                    <li><strong class="text-white">Deepening software and cultural divergence between restrictive and permissive clients:</strong> Clients that maintain strict data policies (such as Knots) and those that follow more permissive defaults continue to diverge in mempool behavior and user base. The failure of a consensus bridge between these approaches entrench parallel node cultures with reduced shared assumptions.</li>
+                    <li><strong class="text-white">Higher long-term political cost of defending node operation:</strong> As the permanent archive of contested content grows without pause, public and regulatory narratives that framing running a full node as legally hazardous gain additional material. Defending the legitimacy of independent validation becomes more expensive in political and legal terms.</li>
+                    <li><strong class="text-white">Reduced experimental space for monetary-priority protocol development:</strong> Developer attention and funding continue to respond to the unrestricted data environment. Projects and research oriented toward pure monetary efficiency or node-cost reduction receive relatively less oxygen than they would have during a period when large data constructions were temporarily constrained.</li>
+                    <li><strong class="text-white">Compounding difficulty of ever restoring a higher-legitimacy path to resource limits:</strong> Each additional period of unrestricted high-volume data embedding increases the number of stakeholders who benefit from the status quo and who will resist future limits. The political and technical difficulty of activating similar limits in the future rises with the duration of the unrestricted regime.</li>
+                    <li><strong class="text-white">Persistent elevation of the minimum viable resources required to run a fully validating archival node:</strong> Without the one-year reduction in high-data volume, the hardware, bandwidth, and storage floor for archival validation continues its prior upward trajectory. The entry cost for new independent operators rises faster than it would have under temporary consensus limits.</li>
+                    <li><strong class="text-white">Greater market acceptance of custodial and light-client defaults as the practical norm:</strong> As full archival validation remains resource-intensive and legally uncertain without relief, more users and institutions default to custodial services or light clients. The social and economic expectation that ordinary participants run fully validating nodes weakens further.</li>
+                    <li><strong class="text-white">Strengthened economic moat for large mining pools that specialize in high-data inclusion:</strong> Pools that efficiently efficiently capture fees from large-data transactions retain and expand their revenue advantage. The failure of BIP-110 removes a potential temporary disruption to that revenue stream, allowing these operations to consolidate their position more securely.</li>
+                    <li><strong class="text-white">Increased difficulty of coordinating any future high-threshold resource soft fork:</strong> The demonstrated hashrate veto, combined with the continued growth of data-dependent stakeholders, raises the practical bar for assembling the broad coalition required under traditional 90–95% signaling thresholds. Future legitimate attempts face a colder coordination environment.</li>
+                    <li><strong class="text-white">Expansion of narrative framing that treats node-cost concerns as anti-progress or anti-market:</strong> With unrestricted data embedding continuing as the baseline, arguments that prioritize node viability are more easily characterized as attempts to suppress legitimate market demand. This framing gains additional traction and makes subsequent debates more polarized.</li>
+                    <li><strong class="text-white">Higher cumulative volume of permanent data that must be grandfathered in any later intervention:</strong> Every additional block of unrestricted high-data activity increases the stock of outputs and payloads that would be protected by grandfathering rules in a future proposal. Later interventions, if they ever occur, would leave a larger permanent archive untouched.</li>
+                    <li><strong class="text-white">Reduced incentive for protocol-level research into more efficient data-handling or client-side validation techniques:</strong> While unrestricted data remains fully valid and fee-paying, the urgency of developing technical mitigations that preserve neutrality while lowering node burden is diminished. Research attention continues to flow toward accommodating data rather than constraining its externalities.</li>
+                    <li><strong class="text-white">Systemic long-term erosion of independent archival redundancy:</strong> Over decades, the accumulation of unmitigated storage and legal stressors creates a structurally fragile validation topology where archival nodes are operated exclusively by well-funded entities, fundamentally altering the trust assumptions of the network.</li>
                 </ul>
             </section>
 
             <!-- Recommendation Section -->
             <section id="sec-recommendation" class="mb-20 scroll-mt-32 text-section w-full">
                 <div class="mb-12">
-                    <h2 class="text-lg md:text-xl text-white font-medium mb-6 font-sans whitespace-normal">Recommendation: Principles for a Successor Proposal</h2>
+                    <h2 class="text-lg md:text-xl text-white font-medium mb-6 font-sans whitespace-normal text-left">Recommendation: Principles for a Successor Proposal</h2>
                     <p class="text-[#a1a1aa] mb-12">Directly countering the failure modes and coordination friction observed during the August 2026 event, any future attempt to address permanent data externalities at the consensus layer must be governed by strict design countermeasures. The analysis yields a concrete set of criteria intended to raise the procedural and empirical quality of subsequent proposals rather than to force premature adoption.</p>
                     
                     <ul class="list-disc pl-6 space-y-6 text-[#a1a1aa] font-sans">
@@ -485,13 +343,13 @@
             </section>
 
             <section id="sec-18" class="mb-16 scroll-mt-24 text-section w-full">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal">Sketch of a New BIP Framework</h2>
+                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal text-left">Sketch of a New BIP Framework</h2>
                 <p class="text-[#a1a1aa]">Drawing on the principles established in the preceding section, a successor framework would treat consensus-level responses to permanent data externalities as an exceptional measure subject to elevated procedural and empirical requirements. The following sketch outlines the core elements of such a framework, referred to here as Resource Externalities Soft Fork Guidelines.</p>
                 <p class="text-[#a1a1aa]">The purpose of any proposal advanced under the guidelines would be narrowly defined: to reduce measurable, sustained externalities imposed on the archival node network by specific high-data transaction constructions, for a limited period, without disturbing ordinary monetary transfers or existing ownership rights.</p>
             </section>
 
             <section id="sec-19" class="mb-16 scroll-mt-24 text-section w-full">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal">Activation, Measurement, and Sunset Requirements</h2>
+                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal text-left">Activation, Measurement, and Sunset Requirements</h2>
                 <p class="text-[#a1a1aa]">The framework outlined above requires precise operational rules for measurement, activation, and termination if it is to avoid the legitimacy and process failures of BIP-110.</p>
                 <p class="text-[#a1a1aa]">Pre-activation measurement would last a minimum of three full difficulty periods, approximately six weeks. During this window a standardized set of metrics would be published at the end of each period: the percentage of block weight occupied by the constructions targeted, absolute volume in bytes, growth rates, and estimated incremental storage burden.</p>
                 <p class="text-[#a1a1aa]">Once active, the same metric suite used in the pre-activation phase would continue to be published at the end of each difficulty period. These reports would serve both as ongoing evaluation of the intervention’s effect and as the empirical basis for any later decision about extension. The additional consensus rules would remain in force only until a predetermined block height, set at the time of activation and corresponding to a period of approximately one year or less. At that height the rules would expire automatically and the prior validity conditions would resume without further action.</p>
@@ -499,7 +357,7 @@
 
             <!-- Conclusion -->
             <section id="sec-20" class="mb-16 scroll-mt-24 text-section w-full">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal">Conclusion and Open Questions</h2>
+                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal text-left">Conclusion and Open Questions</h2>
                 <p class="text-[#a1a1aa]">The BIP-110 conflict of 2026 supplies a clear case study in the limits of soft-fork governance when incentives diverge and legitimacy is thin. The proposal sought temporary consensus restrictions on high-data constructions in order to reduce permanent storage costs and legal exposure borne by archival nodes. Its activation design combined a lowered signaling threshold with a mandatory rejection window. When that window opened with approximately 2.5 percent prior support, enforcing nodes formed a minority chain that advanced only two blocks. The dominant chain, secured by the overwhelming majority of hashrate and recognized by economic nodes, continued under existing rules.</p>
                 
                 <p class="text-[#a1a1aa]">Two conclusions follow. First, activation under the observed levels of support would have damaged Bitcoin’s consensus legitimacy more than the rejection that occurred. Soft forks that alter validity conditions for the entire network require broad and durable agreement; BIP-110 never approached that condition. Second, the rejection left the underlying asymmetry intact. Miners continue to capture one-time fees for inclusion while nodes permanently absorb the associated resource and legal costs. Non-consensus tools remain available, yet their limitations explain why pressure for a stronger response is likely to return.</p>
@@ -515,12 +373,12 @@
 
             <!-- LaTeX Appendix Section -->
             <section id="latex-appendix" class="mb-16 pt-8 scroll-mt-24 w-full bg-neutral-950 p-6 sm:p-8 rounded-2xl border border-neutral-900 overflow-hidden">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 font-sans whitespace-normal">Appendix: Formal Mathematical Models</h2>
+                <h2 class="text-lg md:text-xl text-white font-medium mb-6 font-sans whitespace-normal text-left">Appendix: Formal Mathematical Models</h2>
                 <p class="text-[#a1a1aa] mb-12 text-justify">The following appendices provide a rigorous mathematical and formal treatment of the core dynamics governing the BIP-110 dispute. By translating qualitative economic externalities, asymptotic chain dynamics, and sociological consensus thresholds into precise mathematical formulations, these sections formalize the structural frictions between fee-maximizing miners and permanently burdened archival nodes. Specifically, the following models formalize the unpriced marginal cost externality and temporal asymmetry of storage burdens, apply probability theory and the heaviest-chain rule to evaluate the asymptotic survival probability and block-time divergence of a low-support minority enforcement chain, and construct a formal legitimacy function relating miner signaling thresholds to network coordination stability and the risk of adversarial partitions.</p>
                 
                 <div class="space-y-16 text-[#a1a1aa] font-sans">
                     <div class="space-y-6">
-                        <h3 class="text-base text-white font-medium">Economic Externality Formalization</h3>
+                        <h3 class="text-base text-white font-medium text-left">Economic Externality Formalization</h3>
                         <p class="text-justify">
                             Let \(R_m\) represent the miner's one-time revenue from transaction inclusion fee \(f_i\) for embedding arbitrary data of size \(s_i\):
                         </p>
@@ -548,7 +406,7 @@
                     </div>
 
                     <div class="space-y-6">
-                        <h3 class="text-base text-white font-medium">Minority Chain Asymptotic Game Theory</h3>
+                        <h3 class="text-base text-white font-medium text-left">Minority Chain Asymptotic Game Theory</h3>
                         <p class="text-justify">
                             Let \(H_{dom}\) and \(H_{min}\) denote the hashrate allocated to the dominant chain and the minority enforcing chain respectively, such that \(H_{min} = \epsilon H_{dom}\) where \(\epsilon \approx 0.025\). The difficulty adjustment target \(D\) remains identical immediately following the fork:
                         </p>
@@ -568,7 +426,7 @@
                     </div>
 
                     <div class="space-y-6">
-                        <h3 class="text-base text-white font-medium">Consensus Legitimacy Threshold Function</h3>
+                        <h3 class="text-base text-white font-medium text-left">Consensus Legitimacy Threshold Function</h3>
                         <p class="text-justify">
                             Let \(L(\theta)\) be the legitimacy function of a soft fork parameterized by the miner signaling threshold \(\theta \in (0, 1]\):
                         </p>
@@ -591,10 +449,10 @@
 
             <!-- References -->
             <section id="references" class="mb-16 pt-8 scroll-mt-24 w-full">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 font-sans whitespace-normal">References & Comprehensive Sources</h2>
+                <h2 class="text-lg md:text-xl text-white font-medium mb-6 font-sans whitespace-normal text-left">References & Comprehensive Sources</h2>
                 
                 <div class="space-y-4 text-sm font-sans text-[#a1a1aa]">
-                    <h4 class="text-white uppercase tracking-widest text-xs font-mono mt-8 mb-4">Primary Technical Sources</h4>
+                    <h4 class="text-white uppercase tracking-widest text-xs font-mono mt-8 mb-4 text-left">Primary Technical Sources</h4>
                     <ul class="list-disc pl-6 space-y-4 text-[#a1a1aa]">
                         <li>
                             Dathon Ohm. (2025). <em>BIP 110: Reduced Data Temporary Softfork</em>. Bitcoin Improvement Proposals.
@@ -610,7 +468,7 @@
                         </li>
                     </ul>
 
-                    <h4 class="text-white uppercase tracking-widest text-xs font-mono mt-8 mb-4">Ecosystem Commentary & Expert Analyses</h4>
+                    <h4 class="text-white uppercase tracking-widest text-xs font-mono mt-8 mb-4 text-left">Ecosystem Commentary & Expert Analyses</h4>
                     <ul class="list-disc pl-6 space-y-4 text-[#a1a1aa]">
                         <li>
                             Lopp, J. (2026, February 21). <em>A Layman's Guide to BIP-110</em>. Cypherpunk Cogitations.
@@ -630,7 +488,7 @@
                         </li>
                     </ul>
 
-                    <h4 class="text-white uppercase tracking-widest text-xs font-mono mt-8 mb-4">Contemporary Reporting & Operational Guidance</h4>
+                    <h4 class="text-white uppercase tracking-widest text-xs font-mono mt-8 mb-4 text-left">Contemporary Reporting & Operational Guidance</h4>
                     <ul class="list-disc pl-6 space-y-4 text-[#a1a1aa]">
                         <li>
                             Di Salvo, M. (2026, August 10). BIP-110 fork stalls at two blocks as Bitcoin miners refuse to follow. <em>Bitcoin Magazine</em>.
@@ -655,18 +513,6 @@
         </main>
 
     </div>
-
-    <script>
-        // Toggle Table of Contents Drawer
-        function toggleTableOfContents() {
-            const drawer = document.getElementById('toc-drawer');
-            if (drawer.classList.contains('-translate-x-full')) {
-                drawer.classList.remove('-translate-x-full');
-            } else {
-                drawer.classList.add('-translate-x-full');
-            }
-        }
-    </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
