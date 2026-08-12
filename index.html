@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 
+    <!-- KaTeX for LaTeX Math Rendering -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" crossorigin="anonymous"
@@ -48,6 +49,20 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        #tesseract-container {
+            width: 100%;
+            height: 220px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        #tesseract-container canvas {
+            display: block;
+            outline: none;
+        }
+
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 4px;
@@ -75,18 +90,64 @@
             text-align: justify;
             text-justify: inter-word;
         }
+
+        /* Hide scrollbars for clean navigation bars */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-white selection:text-black bg-black text-white relative flex justify-center">
 
-    <div class="w-full max-w-5xl px-6 sm:px-12 py-16 lg:py-28 bg-black/90 backdrop-blur-md relative z-10">
+    <!-- Slide-out Table of Contents Drawer -->
+    <div id="toc-drawer" class="fixed inset-y-0 left-0 z-50 w-80 bg-black border-r border-neutral-900 p-6 transform -translate-x-full transition-transform duration-300 overflow-y-auto">
+        <div class="flex items-center justify-between mb-8 pb-4 border-b border-neutral-900">
+            <h3 class="text-white font-mono text-sm tracking-wide uppercase">Table of Contents</h3>
+            <button onclick="toggleTableOfContents()" class="text-neutral-400 hover:text-white p-1">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+        <nav class="space-y-3 font-sans text-xs text-neutral-400">
+            <a href="#abstract" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">Abstract</a>
+            <a href="#introduction" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">Introduction</a>
+            <a href="#sec-1" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">1. Technical Overview of BIP-110</a>
+            <a href="#sec-2" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">2. Activation Mechanism & Choices</a>
+            <a href="#sec-3" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">3. Incentive Misalignment</a>
+            <a href="#sec-4" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">4. Storage Externalities & Legal Risk</a>
+            <a href="#sec-5" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">5. Historical Precedents</a>
+            <a href="#sec-6" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">6. Game-Theoretic Analysis</a>
+            <a href="#sec-7" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">7. The Minority Chain Outcome</a>
+            <a href="#sec-8" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">8. Philosophical Divide</a>
+            <a href="#sec-9" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">9. Soft Power of Core & Clients</a>
+            <a href="#sec-10" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">10. Hashrate & Economic Majority</a>
+            <a href="#sec-11" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">11. Critiques of 55% Threshold</a>
+            <a href="#sec-12" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">12. Governance & Ossification Risks</a>
+            <a href="#sec-13" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">13. Evaluation: Net Positive?</a>
+            <a href="#sec-14" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">14. Persistent Structural Problems</a>
+            <a href="#sec-15" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">15. Design Intent & Satoshi Era</a>
+            <a href="#sec-16" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">16. Non-Consensus Alternatives</a>
+            <a href="#worst-case-scenarios" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1 font-semibold text-neutral-300">Worst-Case Scenarios (38 Items)</a>
+            <a href="#sec-recommendation" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">Recommendation & Successor Principles</a>
+            <a href="#sec-18" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">Sketch of a New BIP Framework</a>
+            <a href="#sec-19" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">Activation, Measurement & Sunset</a>
+            <a href="#sec-20" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">Conclusion & Open Questions</a>
+            <a href="#latex-appendix" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">Appendix (Mathematical Models)</a>
+            <a href="#references" onclick="toggleTableOfContents()" class="block hover:text-white transition py-1">References & Sources</a>
+        </nav>
+    </div>
+
+    <div class="w-full max-w-5xl px-6 sm:px-12 py-16 lg:py-28 bg-black/90 backdrop-blur-md relative z-10 mt-6">
         
         <!-- Hero / Header Section (Right-Aligned) -->
         <header class="mb-20 text-right w-full">
-            <h1 class="text-[1.07rem] sm:text-[1.19rem] md:text-[1.38rem] lg:text-[1.62rem] font-sans font-medium tracking-tight leading-snug mb-6 text-white whitespace-nowrap overflow-hidden text-ellipsis">
+            <h1 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-sans font-medium tracking-tight leading-snug mb-6 text-white whitespace-nowrap overflow-hidden text-ellipsis">
                 Consensus, Incentives, and the Limits of Soft-Fork Governance
             </h1>
-            <p class="text-[#a1a1aa] text-[1.18rem] md:text-[1.32rem] font-sans text-right" style="text-align: right !important;">
+            <p class="text-[#a1a1aa] text-lg md:text-xl font-sans text-right" style="text-align: right !important;">
                 An Analysis of the BIP-110 Conflict and Its Implications for Bitcoin
             </p>
         </header>
@@ -95,7 +156,8 @@
             
             <!-- Abstract -->
             <section id="abstract" class="mb-20 scroll-mt-32 text-section w-full">
-                <div class="mb-12">
+                <div id="tesseract-container"></div>
+                <div class="mb-12 border-l-2 border-neutral-800 pl-6">
                     <h2 class="font-sans font-medium text-white text-lg mb-4">Abstract</h2>
                     <p class="mb-0 text-[#a1a1aa]">In August 2026, BIP-110 (Reduced Data Temporary Softfork) entered its mandatory signaling window with approximately 2.5 percent miner support. Nodes enforcing the proposal rejected non-signaling blocks and formed a minority chain that produced only two blocks before stalling, while the dominant chain continued under existing consensus rules. This paper analyzes the technical design of BIP-110, the incentive asymmetry it sought to address, the game-theoretic consequences of its activation parameters, and the historical context that shaped both the proposal and its rejection. It argues that activation under such low legitimacy would have damaged Bitcoin’s consensus process more severely than the observed outcome, yet the episode left unresolved a genuine principal-agent problem between miners, who capture one-time fees, and node operators, who bear permanent storage and legal costs. After examining precedents from the block-size wars and earlier data debates, the paper evaluates the result against Bitcoin’s coordination mechanisms and design priorities. It concludes that the main-chain rejection correctly preserved high legitimacy thresholds and neutrality, while the underlying externality remains a structural vulnerability. A stricter framework for any future consensus-level response to resource externalities is outlined.</p>
                 </div>
@@ -234,120 +296,163 @@
             </section>
 
             <!-- Worst-Case Scenarios -->
-            <section id="worst-case-scenarios" class="mb-16 scroll-mt-24 text-section w-full">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 whitespace-normal">Worst-Case Scenarios Post-BIP-110</h2>
+            <section id="worst-case-scenarios" class="mb-16 scroll-mt-24 text-section w-full bg-neutral-950 p-8 rounded-2xl border border-neutral-900">
+                <div class="mb-8">
+                    <h2 class="text-lg md:text-xl text-white font-medium mt-1">Worst-Case Scenarios Post-BIP-110</h2>
+                </div>
 
-                <ul class="list-disc pl-6 space-y-6 text-[#a1a1aa]">
-                    <li>
-                        <strong class="text-white">Uninterrupted acceleration of permanent high-volume data embedding:</strong> Without the temporary consensus limits, the lowest-cost and highest-capacity methods for embedding large arbitrary payloads remain fully valid. Data volume on the archival chain continues its prior trajectory with no protocol-level interruption, producing faster growth in storage and bandwidth requirements than would have occurred under BIP-110’s restrictions.
+                <ul class="space-y-6 text-[#a1a1aa]">
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">01</span>
+                        <div><strong class="text-white">Uninterrupted acceleration of permanent high-volume data embedding:</strong> Without the temporary consensus limits, the lowest-cost and highest-capacity methods for embedding large arbitrary payloads remain fully valid. Data volume on the archival chain continues its prior trajectory with no protocol-level interruption, producing faster growth in storage and bandwidth requirements than would have occurred under BIP-110’s restrictions.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Permanent locking-in of the miner–node cost externality:</strong> The failure demonstrates that hashrate can successfully reject consensus rules designed to reduce high-data fee revenue. The structural pattern in which miners capture one-time fees while nodes permanently absorb storage and legal costs is thereby reinforced as the stable equilibrium, rather than temporarily interrupted.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">02</span>
+                        <div><strong class="text-white">Permanent locking-in of the miner–node cost externality:</strong> The failure demonstrates that hashrate can successfully reject consensus rules designed to reduce high-data fee revenue. The structural pattern in which miners capture one-time fees while nodes permanently absorb storage and legal costs is thereby reinforced as the stable equilibrium, rather than temporarily interrupted.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Expanded and compounding legal surface area for archival nodes:</strong> The most convenient vectors for embedding material that creates possession or distribution liability remain open. Over time the chain accumulates a larger permanent archive of high-risk content than it would have under the proposed limits, increasing the cumulative legal exposure faced by anyone running a full archival node.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">03</span>
+                        <div><strong class="text-white">Expanded and compounding legal surface area for archival nodes:</strong> The most convenient vectors for embedding material that creates possession or distribution liability remain open. Over time the chain accumulates a larger permanent archive of high-risk content than it would have under the proposed limits, increasing the cumulative legal exposure faced by anyone running a full archival node.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Stronger path dependence for data-centric secondary ecosystems:</strong> Protocols, marketplaces, and financial instruments that rely on cheap, reliable, permanent on-chain data continue to expand without a consensus-level headwind. The longer this regime persists, the larger and more politically resistant the constituency that will oppose any future attempt to impose similar limits.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">04</span>
+                        <div><strong class="text-white">Stronger path dependence for data-centric secondary ecosystems:</strong> Protocols, marketplaces, and financial instruments that rely on cheap, reliable, permanent on-chain data continue to expand without a consensus-level headwind. The longer this regime persists, the larger and more politically resistant the constituency that will oppose any future attempt to impose similar limits.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Reinforced soft veto power of large mining pools over resource-related rule changes:</strong> The episode established that proposals reducing certain categories of fee revenue can be defeated by hashrate non-participation even when a minority of nodes strongly supports them. Future attempts to address node-cost externalities at the consensus layer now face a higher and more explicit barrier.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">05</span>
+                        <div><strong class="text-white">Reinforced soft veto power of large mining pools over resource-related rule changes:</strong> The episode established that proposals reducing certain categories of fee revenue can be defeated by hashrate non-participation even when a minority of nodes strongly supports them. Future attempts to address node-cost externalities at the consensus layer now face a higher and more explicit barrier.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Faster practical crowding-out of ordinary monetary transactions during data demand spikes:</strong> High-data constructions remain fully available to bid for blockspace. Periods in which non-monetary demand sets elevated fee levels for extended durations become more frequent and more prolonged than they would have been under temporary invalidation of the largest data vectors.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">06</span>
+                        <div><strong class="text-white">Faster practical crowding-out of ordinary monetary transactions during data demand spikes:</strong> High-data constructions remain fully available to bid for blockspace. Periods in which non-monetary demand sets elevated fee levels for extended durations become more frequent and more prolonged than they would have been under temporary invalidation of the largest data vectors.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Greater long-term attrition pressure on independent full-node operators:</strong> The specific data-driven component of rising resource costs and legal uncertainty continues without the one-year reduction BIP-110 would have supplied. This removes a potential pause or reversal in the forces pushing smaller and less-resourced operators out of archival validation.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">07</span>
+                        <div><strong class="text-white">Greater long-term attrition pressure on independent full-node operators:</strong> The specific data-driven component of rising resource costs and legal uncertainty continues without the one-year reduction BIP-110 would have supplied. This removes a potential pause or reversal in the forces pushing smaller and less-resourced operators out of archival validation.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Normalization of “data storage is a legitimate and permanent base-layer use” as the default market expectation:</strong> With no temporary consensus signal to the contrary, market participants and developers treat unrestricted permanent data embedding as the settled baseline. Shifting this expectation later becomes correspondingly more difficult.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">08</span>
+                        <div><strong class="text-white">Normalization of “data storage is a legitimate and permanent base-layer use” as the default market expectation:</strong> With no temporary consensus signal to the contrary, market participants and developers treat unrestricted permanent data embedding as the settled baseline. Shifting this expectation later becomes correspondingly more difficult.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Increased likelihood of repeated high-friction, low-success governance contests over the same issue:</strong> Because the underlying externality remains fully intact and the hashrate veto has been demonstrated, future proposals addressing the same problem are more likely to follow the same pattern: motivated minority support, aggressive activation parameters, temporary partitions, and eventual failure. Each cycle adds governance cost without resolution.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">09</span>
+                        <div><strong class="text-white">Increased likelihood of repeated high-friction, low-success governance contests over the same issue:</strong> Because the underlying externality remains fully intact and the hashrate veto has been demonstrated, future proposals addressing the same problem are more likely to follow the same pattern: motivated minority support, aggressive activation parameters, temporary partitions, and eventual failure. Each cycle adds governance cost without resolution.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Weaker practical defense against external pressure that exploits permanent illicit content on the chain:</strong> A larger and continuously growing archive of high-liability material supplies a more durable lever for regulators, courts, or political actors seeking to pressure node operators or the network as a whole. The absence of a temporary consensus reduction in that archive leaves this attack surface more open than it would have been under BIP-110.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">10</span>
+                        <div><strong class="text-white">Weaker practical defense against external pressure that exploits permanent illicit content on the chain:</strong> A larger and continuously growing archive of high-liability material supplies a more durable lever for regulators, courts, or political actors seeking to pressure node operators or the network as a whole. The absence of a temporary consensus reduction in that archive leaves this attack surface more open than it would have been under BIP-110.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Hardening of hashrate as the effective gatekeeper for any future resource-limit proposals:</strong> The successful rejection of BIP-110 with minimal signaling establishes a clear precedent that consensus changes reducing high-data fee categories require strong miner cooperation. Subsequent proposals face an elevated and more explicit coordination barrier even if node-operator support is substantial.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">11</span>
+                        <div><strong class="text-white">Hardening of hashrate as the effective gatekeeper for any future resource-limit proposals:</strong> The successful rejection of BIP-110 with minimal signaling establishes a clear precedent that consensus changes reducing high-data fee categories require strong miner cooperation. Subsequent proposals face an elevated and more explicit coordination barrier even if node-operator support is substantial.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Continued growth of technical workarounds and inscription-style innovations:</strong> Without a temporary consensus constraint, developers and users retain full incentive to refine and expand methods for embedding larger or more complex data within still-valid transaction structures. The technical frontier of permanent on-chain data continues to advance rather than being paused.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">12</span>
+                        <div><strong class="text-white">Continued growth of technical workarounds and inscription-style innovations:</strong> Without a temporary consensus constraint, developers and users retain full incentive to refine and expand methods for embedding larger or more complex data within still-valid transaction structures. The technical frontier of permanent on-chain data continues to advance rather than being paused.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Greater divergence between node-operator interests and mining economics:</strong> The episode sharpens the visible conflict between those who bear permanent costs and those who collect inclusion fees. This deepens factional distrust and makes cooperative solutions on related resource questions harder to achieve in the future.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">13</span>
+                        <div><strong class="text-white">Greater divergence between node-operator interests and mining economics:</strong> The episode sharpens the visible conflict between those who bear permanent costs and those who collect inclusion fees. This deepens factional distrust and makes cooperative solutions on related resource questions harder to achieve in the future.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Increased operational and legal caution by potential new node operators:</strong> Prospective independent operators, observing that data-driven costs and legal risks continue without relief, face a higher perceived barrier to entry. The failure removes a potential temporary reduction in those barriers that BIP-110 would have provided.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">14</span>
+                        <div><strong class="text-white">Increased operational and legal caution by potential new node operators:</strong> Prospective independent operators, observing that data-driven costs and legal risks continue without relief, face a higher perceived barrier to entry. The failure removes a potential temporary reduction in those barriers that BIP-110 would have provided.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Expansion of institutional narratives that Bitcoin’s base layer is unsuitable for ordinary users:</strong> As data-driven fee pressure and chain-growth concerns persist without interruption, narratives claiming the base layer is primarily for large or data-oriented actors gain additional empirical support. This accelerates the shift of ordinary monetary activity toward secondary layers or custodial solutions.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">15</span>
+                        <div><strong class="text-white">Expansion of institutional narratives that Bitcoin’s base layer is unsuitable for ordinary users:</strong> As data-driven fee pressure and chain-growth concerns persist without interruption, narratives claiming the base layer is primarily for large or data-oriented actors gain additional empirical support. This accelerates the shift of ordinary monetary activity toward secondary layers or custodial solutions.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Stronger path dependence against later corrective soft forks:</strong> Every additional month or year of unrestricted high-volume data embedding creates more users, protocols, and economic interests invested in the status quo. The political and technical difficulty of activating similar limits in the future rises with the duration of the unrestricted regime.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">16</span>
+                        <div><strong class="text-white">Stronger path dependence against later corrective soft forks:</strong> Every additional month or year of unrestricted high-volume data embedding creates more users, protocols, and economic interests invested in the status quo. The political and technical difficulty of activating similar limits in the future rises with the duration of the unrestricted regime.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Persistent elevation of the expected governance cost of disagreement:</strong> Because the underlying problem remains fully present and the hashrate veto has been demonstrated, future debates over data limits are more likely to recycle the same high-friction pattern of minority enforcement attempts, temporary partitions, and failure. The baseline cost of these contests stays elevated.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">17</span>
+                        <div><strong class="text-white">Persistent elevation of the expected governance cost of disagreement:</strong> Because the underlying problem remains fully present and the hashrate veto has been demonstrated, future debates over data limits are more likely to recycle the same high-friction pattern of minority enforcement attempts, temporary partitions, and failure. The baseline cost of these contests stays elevated.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Reduced credibility of temporary or narrowly scoped consensus interventions:</strong> The failure of a proposal that was explicitly temporary and limited in scope weakens the practical case for any future time-bounded resource measures. Opponents can point to BIP-110 as evidence that even restrained, expiring rules cannot overcome hashrate resistance.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">18</span>
+                        <div><strong class="text-white">Reduced credibility of temporary or narrowly scoped consensus interventions:</strong> The failure of a proposal that was explicitly temporary and limited in scope weakens the practical case for any future time-bounded resource measures. Opponents can point to BIP-110 as evidence that even restrained, expiring rules cannot overcome hashrate resistance.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Greater accumulation of permanent high-liability content before any future intervention becomes feasible:</strong> The longer the unrestricted period continues, the larger the archive of potentially problematic material that will already exist on the chain if and when a later proposal eventually succeeds. Grandfathering will then protect a bigger stock of high-risk data.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">19</span>
+                        <div><strong class="text-white">Greater accumulation of permanent high-liability content before any future intervention becomes feasible:</strong> The longer the unrestricted period continues, the larger the archive of potentially problematic material that will already exist on the chain if and when a later proposal eventually succeeds. Grandfathering will then protect a bigger stock of high-risk data.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Reinforcement of the view that node-operator concerns can be safely ignored when they conflict with fee revenue:</strong> The outcome supplies a concrete demonstration that a motivated minority of nodes cannot compel changes opposed by hashrate. This weakens the practical influence of pure node-operator preference in future resource and validity debates.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">20</span>
+                        <div><strong class="text-white">Reinforcement of the view that node-operator concerns can be safely ignored when they conflict with fee revenue:</strong> The outcome supplies a concrete demonstration that a motivated minority of nodes cannot compel changes opposed by hashrate. This weakens the practical influence of pure node-operator preference in future resource and validity debates.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Long-term normalization of elevated baseline fees driven by persistent data demand:</strong> Without a temporary reduction in the validity of high-data constructions, structural demand for permanent data embedding continues to influence the fee market. Ordinary monetary users face a higher average cost of on-chain settlement than would have prevailed during a year of consensus limits.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">21</span>
+                        <div><strong class="text-white">Long-term normalization of elevated baseline fees driven by persistent data demand:</strong> Without a temporary reduction in the validity of high-data constructions, structural demand for permanent data embedding continues to influence the fee market. Ordinary monetary users face a higher average cost of on-chain settlement than would have prevailed during a year of consensus limits.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Accelerated migration of monetary activity off the base layer:</strong> As data-driven fee pressure and chain-growth concerns persist without interruption, more users and applications treat the base layer as unsuitable for routine value transfer. This speeds the shift toward secondary layers, custodial services, and alternative systems, reducing the monetary density of the main chain.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">22</span>
+                        <div><strong class="text-white">Accelerated migration of monetary activity off the base layer:</strong> As data-driven fee pressure and chain-growth concerns persist without interruption, more users and applications treat the base layer as unsuitable for routine value transfer. This speeds the shift toward secondary layers, custodial services, and alternative systems, reducing the monetary density of the main chain.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Greater institutional preference for pruned or non-archival configurations:</strong> Facing continued data growth and legal surface area, more operators choose to prune historical data or avoid full archival roles. While technically permitted, the widespread adoption of non-archival setups reduces the number of independently verified full histories and weakens one check on chain integrity.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">23</span>
+                        <div><strong class="text-white">Greater institutional preference for pruned or non-archival configurations:</strong> Facing continued data growth and legal surface area, more operators choose to prune historical data or avoid full archival roles. While technically permitted, the widespread adoption of non-archival setups reduces the number of independently verified full histories and weakens one check on chain integrity.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Expansion of specialized “data-friendly” mining and relay infrastructure:</strong> Pools and services that deliberately optimize for high-data transaction flow gain further advantage. The economic niche for infrastructure that prioritizes data inclusion over node-cost concerns becomes more entrenched, reinforcing the fee-extraction equilibrium.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">24</span>
+                        <div><strong class="text-white">Expansion of specialized “data-friendly” mining and relay infrastructure:</strong> Pools and services that deliberately optimize for high-data transaction flow gain further advantage. The economic niche for infrastructure that prioritizes data inclusion over node-cost concerns becomes more entrenched, reinforcing the fee-extraction equilibrium.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Weakened practical ability to coordinate future temporary interventions:</strong> The failure of an explicitly time-limited proposal makes subsequent attempts at temporary consensus measures politically harder. Opponents can argue that even restrained, expiring rules cannot overcome hashrate resistance, raising the coordination threshold for any similar future effort.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">25</span>
+                        <div><strong class="text-white">Weakened practical ability to coordinate future temporary interventions:</strong> The failure of an explicitly time-limited proposal makes subsequent attempts at temporary consensus measures politically harder. Opponents can argue that even restrained, expiring rules cannot overcome hashrate resistance, raising the coordination threshold for any similar future effort.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Increased use of Bitcoin’s permanent ledger as a strategic liability vector:</strong> Actors who wish to create legal or reputational pressure on the network face a larger and continuously growing set of high-liability content already embedded. The absence of a temporary throttle leaves this vector more open and more potent over time.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">26</span>
+                        <div><strong class="text-white">Increased use of Bitcoin’s permanent ledger as a strategic liability vector:</strong> Actors who wish to create legal or reputational pressure on the network face a larger and continuously growing set of high-liability content already embedded. The absence of a temporary throttle leaves this vector more open and more potent over time.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Deepening software and cultural divergence between restrictive and permissive clients:</strong> Clients that maintain strict data policies (such as Knots) and those that follow more permissive defaults continue to diverge in mempool behavior and user base. The failure of a consensus bridge between these approaches entrench parallel node cultures with reduced shared assumptions.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">27</span>
+                        <div><strong class="text-white">Deepening software and cultural divergence between restrictive and permissive clients:</strong> Clients that maintain strict data policies (such as Knots) and those that follow more permissive defaults continue to diverge in mempool behavior and user base. The failure of a consensus bridge between these approaches entrench parallel node cultures with reduced shared assumptions.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Higher long-term political cost of defending node operation:</strong> As the permanent archive of contested content grows without pause, public and regulatory narratives that frame running a full node as legally hazardous gain additional material. Defending the legitimacy of independent validation becomes more expensive in political and legal terms.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">28</span>
+                        <div><strong class="text-white">Higher long-term political cost of defending node operation:</strong> As the permanent archive of contested content grows without pause, public and regulatory narratives that framing running a full node as legally hazardous gain additional material. Defending the legitimacy of independent validation becomes more expensive in political and legal terms.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Reduced experimental space for monetary-priority protocol development:</strong> Developer attention and funding continue to continue to respond to the unrestricted data environment. Projects and research oriented toward pure monetary efficiency or node-cost reduction receive relatively less oxygen than they would have during a period when large data constructions were temporarily constrained.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">29</span>
+                        <div><strong class="text-white">Reduced experimental space for monetary-priority protocol development:</strong> Developer attention and funding continue to respond to the unrestricted data environment. Projects and research oriented toward pure monetary efficiency or node-cost reduction receive relatively less oxygen than they would have during a period when large data constructions were temporarily constrained.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Compounding difficulty of ever restoring a higher-legitimacy path to resource limits:</strong> Each additional period of unrestricted high-volume data embedding increases the number of stakeholders who benefit from the status quo and who will resist future limits. The political and technical difficulty of activating similar limits in the future rises with the duration of the unrestricted regime.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">30</span>
+                        <div><strong class="text-white">Compounding difficulty of ever restoring a higher-legitimacy path to resource limits:</strong> Each additional period of unrestricted high-volume data embedding increases the number of stakeholders who benefit from the status quo and who will resist future limits. The political and technical difficulty of activating similar limits in the future rises with the duration of the unrestricted regime.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Persistent elevation of the minimum viable resources required to run a fully validating archival node:</strong> Without the one-year reduction in high-data volume, the hardware, bandwidth, and storage floor for archival validation continues its prior upward trajectory. The entry cost for new independent operators rises faster than it would have under temporary consensus limits.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">31</span>
+                        <div><strong class="text-white">Persistent elevation of the minimum viable resources required to run a fully validating archival node:</strong> Without the one-year reduction in high-data volume, the hardware, bandwidth, and storage floor for archival validation continues its prior upward trajectory. The entry cost for new independent operators rises faster than it would have under temporary consensus limits.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Greater market acceptance of custodial and light-client defaults as the practical norm:</strong> As full archival validation remains resource-intensive and legally uncertain without relief, more users and institutions default to custodial services or light clients. The social and economic expectation that ordinary participants run fully validating nodes weakens further.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">32</span>
+                        <div><strong class="text-white">Greater market acceptance of custodial and light-client defaults as the practical norm:</strong> As full archival validation remains resource-intensive and legally uncertain without relief, more users and institutions default to custodial services or light clients. The social and economic expectation that ordinary participants run fully validating nodes weakens further.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Strengthened economic moat for large mining pools that specialize in high-data inclusion:</strong> Pools that efficiently capture fees from large-data transactions retain and expand their revenue advantage. The failure of BIP-110 removes a potential temporary disruption to that revenue stream, allowing these operations to consolidate their position more securely.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">33</span>
+                        <div><strong class="text-white">Strengthened economic moat for large mining pools that specialize in high-data inclusion:</strong> Pools that efficiently efficiently capture fees from large-data transactions retain and expand their revenue advantage. The failure of BIP-110 removes a potential temporary disruption to that revenue stream, allowing these operations to consolidate their position more securely.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Increased difficulty of coordinating any future high-threshold resource soft fork:</strong> The demonstrated hashrate veto, combined with the continued growth of data-dependent stakeholders, raises the practical bar for assembling the broad coalition required under traditional 90–95% signaling thresholds. Future legitimate attempts face a colder coordination environment.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">34</span>
+                        <div><strong class="text-white">Increased difficulty of coordinating any future high-threshold resource soft fork:</strong> The demonstrated hashrate veto, combined with the continued growth of data-dependent stakeholders, raises the practical bar for assembling the broad coalition required under traditional 90–95% signaling thresholds. Future legitimate attempts face a colder coordination environment.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Expansion of narrative framing that treats node-cost concerns as anti-progress or anti-market:</strong> With unrestricted data embedding continuing as the baseline, arguments that prioritize node viability are more easily characterized as attempts to suppress legitimate market demand. This framing gains additional traction and makes subsequent debates more polarized.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">35</span>
+                        <div><strong class="text-white">Expansion of narrative framing that treats node-cost concerns as anti-progress or anti-market:</strong> With unrestricted data embedding continuing as the baseline, arguments that prioritize node viability are more easily characterized as attempts to suppress legitimate market demand. This framing gains additional traction and makes subsequent debates more polarized.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Higher cumulative volume of permanent data that must be grandfathered in any later intervention:</strong> Every additional block of unrestricted high-data activity increases the stock of outputs and payloads that would be protected by grandfathering rules in a future proposal. Later interventions, if they ever occur, would leave a larger permanent archive untouched.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">36</span>
+                        <div><strong class="text-white">Higher cumulative volume of permanent data that must be grandfathered in any later intervention:</strong> Every additional block of unrestricted high-data activity increases the stock of outputs and payloads that would be protected by grandfathering rules in a future proposal. Later interventions, if they ever occur, would leave a larger permanent archive untouched.</div>
                     </li>
-                    <li>
-                        <strong class="text-white">Reduced incentive for protocol-level research into more efficient data-handling or client-side validation techniques:</strong> While unrestricted data remains fully valid and fee-paying, the urgency of developing technical mitigations that preserve neutrality while lowering node burden is diminished. Research attention continues to flow toward accommodating data rather than constraining its externalities.
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">37</span>
+                        <div><strong class="text-white">Reduced incentive for protocol-level research into more efficient data-handling or client-side validation techniques:</strong> While unrestricted data remains fully valid and fee-paying, the urgency of developing technical mitigations that preserve neutrality while lowering node burden is diminished. Research attention continues to flow toward accommodating data rather than constraining its externalities.</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-neutral-500 font-mono text-xs mt-1">38</span>
+                        <div><strong class="text-white">Systemic long-term erosion of independent archival redundancy:</strong> Over decades, the accumulation of unmitigated storage and legal stressors creates a structurally fragile validation topology where archival nodes are operated exclusively by well-funded entities, fundamentally altering the trust assumptions of the network.</div>
                     </li>
                 </ul>
             </section>
@@ -411,12 +516,11 @@
             </section>
 
             <!-- LaTeX Appendix Section -->
-            <section id="latex-appendix" class="mb-16 pt-8 scroll-mt-24 w-full">
-                <h2 class="text-lg md:text-xl text-white font-medium mb-6 font-sans whitespace-normal">Appendix</h2>
-                <p class="text-[#a1a1aa] mb-12">The following appendices provide a rigorous mathematical and formal treatment of the core dynamics governing the BIP-110 dispute. By translating qualitative economic externalities, asymptotic chain dynamics, and sociological consensus thresholds into precise mathematical formulations, these sections formalize the structural frictions between fee-maximizing miners and permanently burdened archival nodes. Specifically, Appendix A models the unpriced marginal cost externality and temporal asymmetry of storage burdens; Appendix B applies probability theory and the heaviest-chain rule to evaluate the asymptotic survival probability and block-time divergence of a low-support minority enforcement chain; and Appendix C constructs a formal legitimacy function relating miner signaling thresholds to network coordination stability and the risk of adversarial partitions.</p>
+            <section id="latex-appendix" class="mb-16 pt-8 scroll-mt-24 w-full bg-neutral-950 p-8 rounded-2xl border border-neutral-900">
+                <h2 class="text-lg md:text-xl text-white font-medium mb-6 font-sans whitespace-normal">Appendix: Formal Mathematical Models</h2>
+                <p class="text-[#a1a1aa] mb-12">The following appendices provide a rigorous mathematical and formal treatment of the core dynamics governing the BIP-110 dispute. By translating qualitative economic externalities, asymptotic chain dynamics, and sociological consensus thresholds into precise mathematical formulations, these sections formalize the structural frictions between fee-maximizing miners and permanently burdened archival nodes. Specifically, the following models formalize the unpriced marginal cost externality and temporal asymmetry of storage burdens, apply probability theory and the heaviest-chain rule to evaluate the asymptotic survival probability and block-time divergence of a low-support minority enforcement chain, and construct a formal legitimacy function relating miner signaling thresholds to network coordination stability and the risk of adversarial partitions.</p>
                 
                 <div class="space-y-16 text-[#a1a1aa] font-sans">
-                    <!-- Appendix A -->
                     <div class="space-y-6">
                         <h3 class="text-base text-white font-medium">Economic Externality Formalization</h3>
                         <p class="text-justify">
@@ -439,7 +543,6 @@
                         </p>
                     </div>
 
-                    <!-- Appendix B -->
                     <div class="space-y-6">
                         <h3 class="text-base text-white font-medium">Minority Chain Asymptotic Game Theory</h3>
                         <p class="text-justify">
@@ -456,7 +559,6 @@
                         </p>
                     </div>
 
-                    <!-- Appendix C -->
                     <div class="space-y-6">
                         <h3 class="text-base text-white font-medium">Consensus Legitimacy Threshold Function</h3>
                         <p class="text-justify">
@@ -542,5 +644,261 @@
 
     </div>
 
+    <script>
+        // Toggle Table of Contents Drawer
+        function toggleTableOfContents() {
+            const drawer = document.getElementById('toc-drawer');
+            if (drawer.classList.contains('-translate-x-full')) {
+                drawer.classList.remove('-translate-x-full');
+            } else {
+                drawer.classList.add('-translate-x-full');
+            }
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('tesseract-container');
+            if (!container) return;
+
+            // Check if WebGL is supported and can create a context
+            let useCanvas2D = false;
+            try {
+                const canvasTest = document.createElement('canvas');
+                const gl = canvasTest.getContext('webgl') || canvasTest.getContext('experimental-webgl');
+                if (!gl) {
+                    useCanvas2D = true;
+                }
+            } catch (e) {
+                useCanvas2D = true;
+            }
+
+            if (useCanvas2D) {
+                // Fallback 2D Canvas rendering for environments without WebGL context support
+                const canvas = document.createElement('canvas');
+                canvas.width = container.clientWidth;
+                canvas.height = container.clientHeight;
+                canvas.style.display = 'block';
+                container.appendChild(canvas);
+                const ctx = canvas.getContext('2d');
+
+                // Generate 4D hypercube vertices
+                const vertices4D = [];
+                for (let i = 0; i < 16; i++) {
+                    vertices4D.push({
+                        x: (i & 1) ? 1 : -1,
+                        y: (i & 2) ? 1 : -1,
+                        z: (i & 4) ? 1 : -1,
+                        w: (i & 8) ? 1 : -1
+                    });
+                }
+
+                const edges = [];
+                for (let i = 0; i < 16; i++) {
+                    for (let j = i + 1; j < 16; j++) {
+                        let diff = 0;
+                        if (vertices4D[i].x !== vertices4D[j].x) diff++;
+                        if (vertices4D[i].y !== vertices4D[j].y) diff++;
+                        if (vertices4D[i].z !== vertices4D[j].z) diff++;
+                        if (vertices4D[i].w !== vertices4D[j].w) diff++;
+                        if (diff === 1) edges.push([i, j]);
+                    }
+                }
+
+                let angleX = 0;
+                let angleY = 0;
+                let angleW = 0;
+
+                function animate2D() {
+                    requestAnimationFrame(animate2D);
+                    angleX += 0.007;
+                    angleY += 0.01;
+                    angleW += 0.005;
+
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    const cx = canvas.width / 2;
+                    const cy = canvas.height / 2;
+                    const scale = Math.min(cx, cy) * 0.7;
+
+                    const projected = vertices4D.map(v => {
+                        let x = v.x, y = v.y, z = v.z, w = v.w;
+                        let cosW = Math.cos(angleW), sinW = Math.sin(angleW);
+                        let x1 = x * cosW - w * sinW;
+                        let w1 = x * sinW + w * cosW;
+                        let y1 = y * cosW - w1 * sinW;
+                        let w2 = y * sinW + w1 * cosW;
+
+                        let distance = 2.5;
+                        let wScale = 1 / (distance - w2 * 0.3);
+
+                        let cosX = Math.cos(angleX), sinX = Math.sin(angleX);
+                        let y2 = y1 * cosX - z * sinX;
+                        let z1 = y1 * sinX + z * cosX;
+
+                        let cosY = Math.cos(angleY), sinY = Math.sin(angleY);
+                        let x2 = x1 * cosY + z1 * sinY;
+                        let z2 = -x1 * sinY + z1 * cosY;
+
+                        return {
+                            x: cx + x2 * wScale * scale * 0.6,
+                            y: cy + y2 * wScale * scale * 0.6,
+                            w: w2
+                        };
+                    });
+
+                    ctx.lineWidth = 1;
+                    edges.forEach(edge => {
+                        const p1 = projected[edge[0]];
+                        const p2 = projected[edge[1]];
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.strokeStyle = (vertices4D[edge[0]].w !== vertices4D[edge[1]].w) ? 'rgba(161, 161, 170, 0.4)' : 'rgba(255, 255, 255, 0.7)';
+                        ctx.stroke();
+                    });
+
+                    // Core glow dot
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fill();
+                }
+
+                animate2D();
+
+                window.addEventListener('resize', () => {
+                    if (!container) return;
+                    canvas.width = container.clientWidth;
+                    canvas.height = container.clientHeight;
+                });
+                return;
+            }
+
+            // WebGL Renderer implementation when context is available
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.z = 4.2;
+
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            // Create a 4D hypercube (tesseract) wireframe projection in 3D
+            const vertices4D = [];
+            for (let i = 0; i < 16; i++) {
+                vertices4D.push(new THREE.Vector4(
+                    (i & 1) ? 1 : -1,
+                    (i & 2) ? 1 : -1,
+                    (i & 4) ? 1 : -1,
+                    (i & 8) ? 1 : -1
+                ));
+            }
+
+            const edges = [];
+            for (let i = 0; i < 16; i++) {
+                for (let j = i + 1; j < 16; j++) {
+                    let diff = 0;
+                    if (vertices4D[i].x !== vertices4D[j].x) diff++;
+                    if (vertices4D[i].y !== vertices4D[j].y) diff++;
+                    if (vertices4D[i].z !== vertices4D[j].z) diff++;
+                    if (vertices4D[i].w !== vertices4D[j].w) diff++;
+                    if (diff === 1) {
+                        edges.push([i, j]);
+                    }
+                }
+            }
+
+            const tesseractGroup = new THREE.Group();
+            scene.add(tesseractGroup);
+
+            const materialOuter = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.8 });
+            const materialInner = new THREE.LineBasicMaterial({ color: 0x71717a, transparent: true, opacity: 0.5 });
+            const materialConnecting = new THREE.LineBasicMaterial({ color: 0xa1a1aa, transparent: true, opacity: 0.6 });
+
+            const lineMeshes = [];
+
+            edges.forEach(edge => {
+                const geom = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]);
+                let mat = materialOuter;
+                const v1 = vertices4D[edge[0]];
+                const v2 = vertices4D[edge[1]];
+                if (v1.w !== v2.w) {
+                    mat = materialConnecting;
+                } else if (Math.abs(v1.x) === 1 && Math.abs(v1.y) === 1 && Math.abs(v1.z) === 1 && Math.abs(v1.w) === 1) {
+                    mat = materialInner;
+                }
+                const line = new THREE.Line(geom, mat);
+                tesseractGroup.add(line);
+                lineMeshes.push({ line, i: edge[0], j: edge[1] });
+            });
+
+            const coreGeometry = new THREE.SphereGeometry(0.08, 16, 16);
+            const coreMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+            const coreMesh = new THREE.Mesh(coreGeometry, coreMaterial);
+            tesseractGroup.add(coreMesh);
+
+            let angleX = 0;
+            let angleY = 0;
+            let angleW = 0;
+
+            function animate() {
+                requestAnimationFrame(animate);
+
+                angleX += 0.007;
+                angleY += 0.01;
+                angleW += 0.005;
+
+                const projected3D = vertices4D.map(v => {
+                    let x = v.x, y = v.y, z = v.z, w = v.w;
+
+                    let cosW = Math.cos(angleW), sinW = Math.sin(angleW);
+                    let x1 = x * cosW - w * sinW;
+                    let w1 = x * sinW + w * cosW;
+
+                    let y1 = y * cosW - w1 * sinW;
+                    let w2 = y * sinW + w1 * cosW;
+
+                    let distance = 2.5;
+                    let wScale = 1 / (distance - w2 * 0.3);
+
+                    let cosX = Math.cos(angleX), sinX = Math.sin(angleX);
+                    let y2 = y1 * cosX - z * sinX;
+                    let z1 = y1 * sinX + z * cosX;
+
+                    let cosY = Math.cos(angleY), sinY = Math.sin(angleY);
+                    let x2 = x1 * cosY + z1 * sinY;
+                    let z2 = -x1 * sinY + z1 * cosY;
+
+                    return new THREE.Vector3(x2 * wScale * 1.3, y2 * wScale * 1.3, z2 * wScale * 1.3);
+                });
+
+                lineMeshes.forEach(item => {
+                    const p1 = projected3D[item.i];
+                    const p2 = projected3D[item.j];
+                    const positions = item.line.geometry.attributes.position.array;
+                    positions[0] = p1.x;
+                    positions[1] = p1.y;
+                    positions[2] = p1.z;
+                    positions[3] = p2.x;
+                    positions[4] = p2.y;
+                    positions[5] = p2.z;
+                    item.line.geometry.attributes.position.needsUpdate = true;
+                });
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+            window.addEventListener('resize', () => {
+                if (!container) return;
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+        });
+    </script>
 </body>
 </html>
