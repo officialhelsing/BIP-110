@@ -2,7 +2,7 @@
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>The BIP-110 Conflict & Bitcoin Governance</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,6 +47,7 @@
             color: #ffffff !important;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+            touch-action: pan-x pan-y;
         }
 
         #tesseract-container {
@@ -516,9 +517,9 @@
             </section>
 
             <!-- LaTeX Appendix Section -->
-            <section id="latex-appendix" class="mb-16 pt-8 scroll-mt-24 w-full bg-neutral-950 p-8 rounded-2xl border border-neutral-900">
+            <section id="latex-appendix" class="mb-16 pt-8 scroll-mt-24 w-full bg-neutral-950 p-6 sm:p-8 rounded-2xl border border-neutral-900 overflow-hidden">
                 <h2 class="text-lg md:text-xl text-white font-medium mb-6 font-sans whitespace-normal">Appendix: Formal Mathematical Models</h2>
-                <p class="text-[#a1a1aa] mb-12">The following appendices provide a rigorous mathematical and formal treatment of the core dynamics governing the BIP-110 dispute. By translating qualitative economic externalities, asymptotic chain dynamics, and sociological consensus thresholds into precise mathematical formulations, these sections formalize the structural frictions between fee-maximizing miners and permanently burdened archival nodes. Specifically, the following models formalize the unpriced marginal cost externality and temporal asymmetry of storage burdens, apply probability theory and the heaviest-chain rule to evaluate the asymptotic survival probability and block-time divergence of a low-support minority enforcement chain, and construct a formal legitimacy function relating miner signaling thresholds to network coordination stability and the risk of adversarial partitions.</p>
+                <p class="text-[#a1a1aa] mb-12 text-justify">The following appendices provide a rigorous mathematical and formal treatment of the core dynamics governing the BIP-110 dispute. By translating qualitative economic externalities, asymptotic chain dynamics, and sociological consensus thresholds into precise mathematical formulations, these sections formalize the structural frictions between fee-maximizing miners and permanently burdened archival nodes. Specifically, the following models formalize the unpriced marginal cost externality and temporal asymmetry of storage burdens, apply probability theory and the heaviest-chain rule to evaluate the asymptotic survival probability and block-time divergence of a low-support minority enforcement chain, and construct a formal legitimacy function relating miner signaling thresholds to network coordination stability and the risk of adversarial partitions.</p>
                 
                 <div class="space-y-16 text-[#a1a1aa] font-sans">
                     <div class="space-y-6">
@@ -526,21 +527,27 @@
                         <p class="text-justify">
                             Let \(R_m\) represent the miner's one-time revenue from transaction inclusion fee \(f_i\) for embedding arbitrary data of size \(s_i\):
                         </p>
-                        <p class="text-center font-mono text-white text-base sm:text-lg my-4">
-                            \[R_m = \sum_{i \in \text{data}} f_i(s_i)\]
-                        </p>
+                        <div class="w-full overflow-x-auto no-scrollbar py-2">
+                            <div class="min-w-max mx-auto text-center font-mono text-white text-sm sm:text-base md:text-lg">
+                                \[R_m = \sum_{i \in \text{data}} f_i(s_i)\]
+                            </div>
+                        </div>
                         <p class="text-justify">
                             Conversely, let \(C_n\) denote the permanent ongoing cost of storage, bandwidth, and legal exposure borne perpetually by full validating archival nodes:
                         </p>
-                        <p class="text-center font-mono text-white text-base sm:text-lg my-4">
-                            \[C_n = \int_{t_0}^{\infty} \left( \alpha \cdot S(t) + \beta \cdot L(t) \right) e^{-rt} dt\]
-                        </p>
+                        <div class="w-full overflow-x-auto no-scrollbar py-2">
+                            <div class="min-w-max mx-auto text-center font-mono text-white text-sm sm:text-base md:text-lg">
+                                \[C_n = \int_{t_0}^{\infty} \left( \alpha \cdot S(t) + \beta \cdot L(t) \right) e^{-rt} dt\]
+                            </div>
+                        </div>
                         <p class="text-justify">
                             where \(S(t)\) is the cumulative state growth and \(L(t)\) is the time-varying legal risk factor. Because \(\frac{\partial R_m}{\partial C_n} = 0\) for miners post-inclusion, an unpriced externality \(\Phi\) exists:
                         </p>
-                        <p class="text-center font-mono text-white text-base sm:text-lg my-4">
-                            \[\Phi = C_n - \sum_{i} \mathbb{E}[\text{Internalized Node Benefit}]\]
-                        </p>
+                        <div class="w-full overflow-x-auto no-scrollbar py-2">
+                            <div class="min-w-max mx-auto text-center font-mono text-white text-sm sm:text-base md:text-lg">
+                                \[\Phi = C_n - \sum_{i} \mathbb{E}[\text{Internalized Node Benefit}]\]
+                            </div>
+                        </div>
                     </div>
 
                     <div class="space-y-6">
@@ -548,15 +555,19 @@
                         <p class="text-justify">
                             Let \(H_{dom}\) and \(H_{min}\) denote the hashrate allocated to the dominant chain and the minority enforcing chain respectively, such that \(H_{min} = \epsilon H_{dom}\) where \(\epsilon \approx 0.025\). The difficulty adjustment target \(D\) remains identical immediately following the fork:
                         </p>
-                        <p class="text-center font-mono text-white text-base sm:text-lg my-4">
-                            \[\mathbb{E}[T_{block}^{min}] = \frac{D \cdot 2^{32}}{H_{min}} = \frac{1}{\epsilon} \mathbb{E}[T_{block}^{dom}] \approx 40 \text{ hours per block}\]
-                        </p>
+                        <div class="w-full overflow-x-auto no-scrollbar py-2">
+                            <div class="min-w-max mx-auto text-center font-mono text-white text-sm sm:text-base md:text-lg">
+                                \[\mathbb{E}[T_{block}^{min}] = \frac{D \cdot 2^{32}}{H_{min}} = \frac{1}{\epsilon} \mathbb{E}[T_{block}^{dom}] \approx 40 \text{ hours per block}\]
+                            </div>
+                        </div>
                         <p class="text-justify">
                             Under the heaviest-chain selection rule, the probability \(P_{reorg}\) of the minority chain overtaking or sustaining viability without economic coordination asymptotically approaches zero:
                         </p>
-                        <p class="text-center font-mono text-white text-base sm:text-lg my-4">
-                            \[\lim_{k \to \infty} P(\text{Chain}_{min} \succ \text{Chain}_{dom}) = 0 \quad \text{for} \quad \epsilon < 0.5\]
-                        </p>
+                        <div class="w-full overflow-x-auto no-scrollbar py-2">
+                            <div class="min-w-max mx-auto text-center font-mono text-white text-sm sm:text-base md:text-lg">
+                                \[\lim_{k \to \infty} P(\text{Chain}_{min} \succ \text{Chain}_{dom}) = 0 \quad \text{for} \quad \epsilon < 0.5\]
+                            </div>
+                        </div>
                     </div>
 
                     <div class="space-y-6">
@@ -564,15 +575,19 @@
                         <p class="text-justify">
                             Let \(L(\theta)\) be the legitimacy function of a soft fork parameterized by the miner signaling threshold \(\theta \in (0, 1]\):
                         </p>
-                        <p class="text-center font-mono text-white text-base sm:text-lg my-4">
-                            \[L(\theta) = 1 - \exp\left( -\frac{\theta}{\theta_0} \right) - \gamma \cdot \mathbb{I}(\text{Mandatory Window Forced})\]
-                        </p>
+                        <div class="w-full overflow-x-auto no-scrollbar py-2">
+                            <div class="min-w-max mx-auto text-center font-mono text-white text-sm sm:text-base md:text-lg">
+                                \[L(\theta) = 1 - \exp\left( -\frac{\theta}{\theta_0} \right) - \gamma \cdot \mathbb{I}(\text{Mandatory Window Forced})\]
+                            </div>
+                        </div>
                         <p class="text-justify">
                             To preserve network consensus stability and prevent adversarial splits, the threshold must satisfy:
                         </p>
-                        <p class="text-center font-mono text-white text-base sm:text-lg my-4">
-                            \[\theta^* \geq 0.90\]
-                        </p>
+                        <div class="w-full overflow-x-auto no-scrollbar py-2">
+                            <div class="min-w-max mx-auto text-center font-mono text-white text-sm sm:text-base md:text-lg">
+                                \[\theta^* \geq 0.90\]
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
